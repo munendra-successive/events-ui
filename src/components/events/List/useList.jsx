@@ -71,7 +71,7 @@ const useList = () => {
           },
         }
       );
-      setData(response.data["Data is"]);
+      setData(response.data["data"]);
     } catch (error) {
       console.error("Error fetching data: ", error);
     }
@@ -107,7 +107,7 @@ const useList = () => {
           },
         }
       );
-      setData(response.data["Data is"]);
+      setData(response.data["data"]);
     } catch (error) {
       setData([]);
       console.error("Error fetching data: ", error);
@@ -125,7 +125,7 @@ const useList = () => {
           "Content-Type": "application/json",
         },
       });
-      setData(response.data["Data is"]);
+      setData(response.data["data"]);
       setPagination({
         ...pagination,
         total: response.data.datalength,

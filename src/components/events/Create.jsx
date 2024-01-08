@@ -3,6 +3,7 @@ import { Form, Input, DatePicker, Button } from "antd";
 import axios from "axios";
 import { UserAuth } from "..";
 import { useNavigate } from "react-router-dom";
+import Sidebar from "../Sidebar";
 
 const { TextArea } = Input;
 
@@ -30,6 +31,7 @@ const Create = () => {
 
   return (
     <>
+    <Sidebar>
       {login ? (
         <Form
           form={form}
@@ -98,6 +100,7 @@ const Create = () => {
       ) : (
         navigate("/")
       )}
+      </Sidebar>
     </>
   );
 };

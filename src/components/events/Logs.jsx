@@ -4,7 +4,7 @@ import { Table } from "antd";
 import { UserAuth } from "../user/UserAuthContext";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
-
+import Sidebar from "../Sidebar";
 const Logs = () => {
   const columns = [
     {
@@ -44,14 +44,16 @@ const Logs = () => {
 
   return (
     <>
-      {login ? (
-        <div>
-          <h2>Error Details</h2>
-          <Table columns={columns} dataSource={data} />
-        </div>
-      ) : (
-        navigate("/")
-      )}
+      <Sidebar>
+        {login ? (
+          <div>
+            <h2>Error Details</h2>
+            <Table columns={columns} dataSource={data} />
+          </div>
+        ) : (
+          navigate("/")
+        )}
+      </Sidebar>
     </>
   );
 };

@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import axios from "axios";
 import { UserAuth } from "../user/UserAuthContext";
 import { useNavigate } from "react-router-dom";
+import Sidebar from "../Sidebar";
 
 const BulkUplaod = () => {
   const { login } = useContext(UserAuth);
@@ -41,18 +42,20 @@ const BulkUplaod = () => {
   };
   return (
     <>
-      {login ? (
-        <div>
-          <h1>CSV File Uploader</h1>
-          <input type="file" onChange={handleFileChange} accept=".csv" />
-          <button onClick={handleUpload} disabled={!file}>
-            Upload CSV
-          </button>
-          <p>{message}</p>
-        </div>
-      ) : (
-        navigate("/")
-      )}
+      <Sidebar>
+        {login ? (
+          <div>
+            <h1>CSV File Uploader</h1>
+            <input type="file" onChange={handleFileChange} accept=".csv" />
+            <button onClick={handleUpload} disabled={!file}>
+              Upload CSV
+            </button>
+            <p>{message}</p>
+          </div>
+        ) : (
+          navigate("/")
+        )}
+      </Sidebar>
     </>
   );
 };

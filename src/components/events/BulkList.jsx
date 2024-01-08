@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Table, Button } from "antd";
 import { useNavigate } from "react-router-dom";
+import Sidebar from "../Sidebar";
 
 const BulkList = () => {
   const [data, setData] = useState([]);
@@ -18,7 +19,7 @@ const BulkList = () => {
             },
           }
         );
-        setData(response.data["Data"]);
+        setData(response.data["data"]);
       } catch (error) {
         console.error("Error fetching data: ", error);
       }
@@ -68,8 +69,10 @@ const BulkList = () => {
 
   return (
     <div>
-      <h2>BulkList</h2>
-      <Table dataSource={data} columns={columns} />
+      <Sidebar>
+        <h2>BulkList</h2>
+        <Table dataSource={data} columns={columns} />
+      </Sidebar>
     </div>
   );
 };

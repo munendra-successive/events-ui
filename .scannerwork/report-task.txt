@@ -2,5 +2,5 @@ projectKey=events-ui
 serverUrl=http://localhost:9000
 serverVersion=10.3.0.82913
 dashboardUrl=http://localhost:9000/dashboard?id=events-ui
-ceTaskId=AYzUdmNw6sJtbiUkTkON
-ceTaskUrl=http://localhost:9000/api/ce/task?id=AYzUdmNw6sJtbiUkTkON
+ceTaskId=AYzo0OYu2MqeocWW7ifB
+ceTaskUrl=http://localhost:9000/api/ce/task?id=AYzo0OYu2MqeocWW7ifB

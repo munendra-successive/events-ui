@@ -2,24 +2,28 @@ import React, { useState, useContext } from "react";
 import { Form, Input, Button } from "antd";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { UserAuth } from "..";
-
+import { UserAuth } from "./UserAuthContext";
 const Login = () => {
   const { setLogin } = useContext(UserAuth);
+
   const navigate = useNavigate();
   const [message, setMessage] = useState("");
   const handleLogin = async (values) => {
     try {
+      
       const response = await axios.post(
         "http://localhost:8000/users/login",
         values,
         {
           headers: {
             "Content-Type": "application/json",
+            Authorization: localStorage.getItem("authorization"),
           },
         }
       );
+      console.log("response is: ", response.data);
       if (response.data.message === "Login Successful") {
+        localStorage.setItem("authorization", response.data.tokenIs);
         setLogin(true);
         navigate("/list");
         setMessage("Login Successful");

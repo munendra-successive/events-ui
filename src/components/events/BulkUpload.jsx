@@ -45,7 +45,7 @@ const BulkUplaod = () => {
       <Sidebar>
         {login ? (
           <div>
-            <h1>CSV File Uploader</h1>
+            <h1>CSV File  Uploader</h1>
             <input type="file" onChange={handleFileChange} accept=".csv" />
             <button onClick={handleUpload} disabled={!file}>
               Upload CSV

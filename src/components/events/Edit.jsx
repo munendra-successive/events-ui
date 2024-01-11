@@ -63,7 +63,7 @@ const Edit = () => {
         }
       );
     } catch (error) {
-      console.error("Error in Saving data", error);
+      console.error("Error in Saving data: ", error);
     }
   };
 

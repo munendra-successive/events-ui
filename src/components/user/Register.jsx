@@ -92,7 +92,7 @@ const Register = () => {
             }),
           ]}
         >
-          <Input.Password placeholder="Enter password again" />
+          <Input.Password placeholder="Enter password  again" />
         </Form.Item>
 
         <Form.Item

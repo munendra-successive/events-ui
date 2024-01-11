@@ -24,6 +24,21 @@ const useList = () => {
       key: "description",
     },
     {
+      title: "Category",
+      dataIndex: "category",
+      key: "category",
+    },
+    {
+      title: "Type",
+      dataIndex: "organizerInfo",
+      key: "organizerInfo",
+    },
+    {
+      title: "Type",
+      dataIndex: "type",
+      key: "type",
+    },
+    {
       title: "View/Edit",
       key: "action",
       render: (record) => (
@@ -72,6 +87,10 @@ const useList = () => {
         }
       );
       setData(response.data["data"]);
+      setPagination({
+        ...pagination,
+        total: response.data.datalength,
+      });
     } catch (error) {
       console.error("Error fetching data: ", error);
     }
@@ -100,7 +119,7 @@ const useList = () => {
   const handleSearch = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/events/find/${searchQuery}`,
+        `http://localhost:8000/events/search/?search=${searchQuery}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -108,6 +127,10 @@ const useList = () => {
         }
       );
       setData(response.data["data"]);
+      setPagination({
+        ...pagination,
+        total: response.data.datalength - pagination.pageSize,
+      });
     } catch (error) {
       setData([]);
       console.error("Error fetching data: ", error);

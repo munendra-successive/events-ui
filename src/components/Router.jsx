@@ -24,7 +24,7 @@ const Router = () => {
       <Route path="/view/:id" element={<View />} />
       <Route path="/edit/:id" element={<Edit />} />
       <Route path="/logs/:uploadId" element={<Logs />} />
-      <Route path="*" element={<NotFound />} />
+      <Route path="*"  element={<NotFound />} />
     </Routes>
   );
 };

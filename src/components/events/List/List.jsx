@@ -14,6 +14,7 @@ const List = () => {
     data,
     searchQuery,
     setSearchQuery,
+
     isRefresh,
     pagination,
     setPagination,
@@ -24,16 +25,16 @@ const List = () => {
     setIsModalOpen,
     columns,
   } = useList();
-  const { login } = useContext(UserAuth);
+  const { login, isAuthenticated } = useContext(UserAuth);
 
   useEffect(() => {
     fetchData();
-  }, [pagination.current, pagination.pageSize, isRefresh]);
+  }, [pagination.current, pagination.pageSize]);
 
   return (
     <>
       <Sidebar>
-        {login ? (
+        {login && isAuthenticated() ? (
           <div>
             <div style={{ display: "flex", margin: "10px" }}>
               <Select
@@ -50,9 +51,14 @@ const List = () => {
               </Select>
               <input
                 type="text"
-                placeholder="Search by Event type"
+                placeholder="Search"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleSearch();
+                  }
+                }}
                 style={{
                   marginRight: "16px",
                   padding: "4px",
@@ -60,9 +66,7 @@ const List = () => {
                   borderBlockColor: "lightgray",
                 }}
               />
-              <Button type="primary" onClick={handleSearch}>
-                Search
-              </Button>
+
               <div
                 style={{
                   position: "absolute",

@@ -22,12 +22,18 @@ const Logs = () => {
   const { login } = useContext(UserAuth);
   const navigate = useNavigate();
   const [data, setData] = useState([]);
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 10,
+    total: 0,
+  });
   const { uploadId } = useParams();
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8000/events/getByUploadId/${uploadId}`,
+          `http://localhost:8000/events/getByUploadId/${uploadId}/?current=${pagination.current}&pageSize=${pagination.pageSize}`,
+
           {
             headers: {
               "Content-Type": "application/json",
@@ -35,12 +41,16 @@ const Logs = () => {
           }
         );
         setData(response.data.data);
+        setPagination({
+          ...pagination,
+          total: response.data.datalength - pagination.pageSize,
+        });
       } catch (error) {
         console.error("Error fetching data: ", error);
       }
     };
     fetchData();
-  }, [uploadId]);
+  }, [uploadId, pagination.current, pagination.pageSize]);
 
   return (
     <>
@@ -48,7 +58,12 @@ const Logs = () => {
         {login ? (
           <div>
             <h2>Error Details</h2>
-            <Table columns={columns} dataSource={data} />
+            <Table
+              columns={columns}
+              dataSource={data}
+              pagination={pagination}
+              onChange={(pagin) => setPagination(pagin)}
+            />
           </div>
         ) : (
           navigate("/")

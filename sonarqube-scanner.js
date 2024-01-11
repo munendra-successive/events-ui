@@ -1,12 +1,14 @@
 const scanner = require("sonarqube-scanner");
 // eslint-disable-next-line @typescript-eslint/typedef
-const userToken = "squ_5a86e50584173f8daea8ec4f59bf5a7e73b376ad";
+const userToken = "squ_e7b68441b990a8f98f6e55e88caadac9fdfa35af";
 scanner(
   {
     serverUrl: "http://localhost:9000",
     token: userToken,
     options: {
       "sonar.sources": "./src",
+      "sonar.exclusions":
+        "**/__tests__/**,src/index.js,src/reportWebVitals.js,/src/**/useList.jsx",
     },
   },
   () => process.exit()

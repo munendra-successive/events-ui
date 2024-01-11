@@ -49,7 +49,7 @@ const BulkList = () => {
       key: "startTime",
     },
     {
-      title: "View/Edit",
+      title: "View Logs",
       key: "action",
       render: (text, record) => (
         <Button

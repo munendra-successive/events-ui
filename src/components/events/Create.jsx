@@ -87,7 +87,7 @@ const Create = () => {
             <Input />
           </Form.Item>
 
-          <Form.Item label="Status" name="status">
+          <Form.Item label="Status " name="status">
             <Input />
           </Form.Item>
 

@@ -3,12 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^14.5.2",
     "antd": "^5.12.5",
     "axios": "^1.6.2",
     "csvtojson": "^2.0.10",
+    "enzyme": "^3.11.0",
     "react": "18.2.0",
     "react-datepicker": "^4.25.0",
     "react-dom": "18.2.0",
@@ -54,7 +54,10 @@
     ]
   },
   "devDependencies": {
-    "esm": "^3.2.25",
-    "jest": "^29.7.0"
-  }
+    "@testing-library/jest-dom": "^5.17.0",
+    "esm": "^3.2.25"
+  },
+  "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
+  "author": "",
+  "license": "ISC"
 }

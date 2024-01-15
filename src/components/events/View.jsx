@@ -15,7 +15,7 @@ const columns = [
     dataIndex: "address",
     key: "address",
     render: (_, record) => (
-      <span>
+      <span data-testid="view">
         {record.address.street}
         <br />
         {record.address.city}
@@ -78,7 +78,7 @@ const View = () => {
         );
         setData(response.data["data"]);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error  fetching data:", error);
       }
     };
 
@@ -86,11 +86,9 @@ const View = () => {
   }, []);
 
   return (
-    <>
-      <Sidebar>
-        {login ? <Table dataSource={data} columns={columns} /> : navigate("/")}
-      </Sidebar>
-    </>
+    <Sidebar>
+      {login ? <Table dataSource={data} columns={columns} /> : navigate("/")}
+    </Sidebar>
   );
 };
 

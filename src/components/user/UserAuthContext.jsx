@@ -4,7 +4,7 @@ export const UserAuth = createContext();
 const UserAuthContext = ({ children }) => {
   const [login, setLogin] = useState(true);
   const isAuthenticated = () => {
-    if (localStorage.getItem("authorization")) return true;
+    if (localStorage.getItem('authorization')) return true;
     return false;
   };
   return (

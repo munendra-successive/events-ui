@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Form, Input, DatePicker, Button } from "antd";
 import axios from "axios";
 import { UserAuth } from "..";
@@ -10,6 +10,7 @@ const { TextArea } = Input;
 const Create = () => {
   const { login } = useContext(UserAuth);
   const navigate = useNavigate();
+  const [message, setMessage] = useState("");
   const [form] = Form.useForm();
 
   const handleSubmit = async (values) => {
@@ -23,14 +24,15 @@ const Create = () => {
           },
         }
       );
-      console.log("Response is : ", response);
+      if (response.data.msg === "Event added Successfully") {
+        setMessage("Record added");
+      }
     } catch (error) {
       console.error("Error in Saving data", error);
     }
   };
 
   return (
-    <>
     <Sidebar>
       {login ? (
         <Form
@@ -100,8 +102,8 @@ const Create = () => {
       ) : (
         navigate("/")
       )}
-      </Sidebar>
-    </>
+      <h4>{message}</h4>
+    </Sidebar>
   );
 };
 

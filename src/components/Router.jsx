@@ -15,7 +15,7 @@ import Logs from "./events/Logs";
 const Router = () => {
   return (
     <Routes>
-      <Route path="/" element={<Login />} />
+      <Route path="/" element={<Login  />} />
       <Route path="/register" element={<Register />} />
       <Route path="/list" element={<List />} />
       <Route path="/create" element={<Create />} />

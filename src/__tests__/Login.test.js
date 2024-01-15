@@ -37,12 +37,10 @@ describe("Testing Login Page", () => {
     expect(screen.getByText("Password")).toBeInTheDocument();
   });
 
-  test("Testing Login Page displays error message on unsuccessful login", async () => {
-    const errorMessage = "Invalid credentials";
-    axios.post.mockRejectedValueOnce({
-      response: { data: { message: errorMessage } },
+  test("Testing Login Page for successful login", async () => {
+    axios.post.mockResolvedValue({
+      data: { message: "Login Successful" }
     });
-
     render(
       <UserAuth.Provider value={{ setLogin }}>
         <BrowserRouter>
@@ -60,8 +58,69 @@ describe("Testing Login Page", () => {
 
     fireEvent.click(loginButton);
 
-    await waitFor(() => {
+    waitFor(() => {
+      expect(screen.getByText("Login Successful")).toBeInTheDocument();
+    });
+  });
+
+  test("Testing Login Page displays error message on unsuccessful login", async () => {
+    axios.post.mockResolvedValue({
+      data: { message: "Invalid Credentials" },
+    });
+    render(
+      <UserAuth.Provider value={{ setLogin }}>
+        <BrowserRouter>
+          <Login />
+        </BrowserRouter>
+      </UserAuth.Provider>
+    );
+
+    const emailInput = screen.getByLabelText("Email");
+    const passwordInput = screen.getByLabelText("Password");
+    const loginButton = screen.getByText("Log In");
+
+    fireEvent.change(emailInput, { target: { value: "test@example.com" } });
+    fireEvent.change(passwordInput, { target: { value: "password123" } });
+    fireEvent.click(loginButton);
+    waitFor(() => {
       expect(screen.getByText("Invalid Credentials")).toBeInTheDocument();
     });
+  });
+
+  test("Testing Login Page  if an error occurs", async () => {
+    axios.post.mockRejectedValue({
+      data: { message: "Invalid Credentials" },
+    });
+    render(
+      <UserAuth.Provider value={{ setLogin }}>
+        <BrowserRouter>
+          <Login />
+        </BrowserRouter>
+      </UserAuth.Provider>
+    );
+
+    const emailInput = screen.getByLabelText("Email");
+    const passwordInput = screen.getByLabelText("Password");
+    const loginButton = screen.getByText("Log In");
+
+    fireEvent.change(emailInput, { target: { value: "test@example.com" } });
+    fireEvent.change(passwordInput, { target: { value: "password123" } });
+    fireEvent.click(loginButton);
+  });
+
+  test("Testing if redirects on register page or not", async () => {
+    axios.post.mockRejectedValue({
+      data: { message: "Invalid Credentials" },
+    });
+    render(
+      <UserAuth.Provider value={{ setLogin }}>
+        <BrowserRouter>
+          <Login />
+        </BrowserRouter>
+      </UserAuth.Provider>
+    );
+    const signUpButton = screen.getByText("Sign Up");
+    fireEvent.click(signUpButton);
+    expect(window.location.pathname).toBe("/register");
   });
 });

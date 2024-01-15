@@ -23,7 +23,6 @@ const Register = () => {
       } else {
         setMessage("User already exist");
       }
-      console.log("Message is this: ", message);
     } catch (error) {
       console.error("Response is:", error);
     }
@@ -99,7 +98,7 @@ const Register = () => {
           label="Address"
           name="address"
           rules={[
-            { required: true, min: 10, message: "Please input your address!" },
+            { required: true, min: 10, message: "Please input you  address!" },
           ]}
         >
           <Input placeholder="Enter city, state" />

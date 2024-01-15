@@ -33,30 +33,32 @@ const BulkUplaod = () => {
         }
       );
       setMessage(
-        `${response.data.message} number of items is: ${response.data.numberOfItems}`
+        `${response.data.message} number of  items is: ${response.data.numberOfItems}`
       );
     } catch (error) {
-      console.log("Upload failed", error);
       setMessage("Upload failed!");
     }
   };
   return (
-    <>
-      <Sidebar>
-        {login ? (
-          <div>
-            <h1>CSV File  Uploader</h1>
-            <input type="file" onChange={handleFileChange} accept=".csv" />
-            <button onClick={handleUpload} disabled={!file}>
-              Upload CSV
-            </button>
-            <p>{message}</p>
-          </div>
-        ) : (
-          navigate("/")
-        )}
-      </Sidebar>
-    </>
+    <Sidebar>
+      {login ? (
+        <div>
+          <h1>CSV File Uploader</h1>
+          <input
+            data-testid="upload-button"
+            type="file"
+            onChange={handleFileChange}
+            accept=".csv"
+          />
+          <button onClick={handleUpload} disabled={!file}>
+            Upload CSV
+          </button>
+          <p>{message}</p>
+        </div>
+      ) : (
+        navigate("/")
+      )}
+    </Sidebar>
   );
 };
 

@@ -10,7 +10,6 @@ const Login = () => {
   const [message, setMessage] = useState("");
   const handleLogin = async (values) => {
     try {
-      
       const response = await axios.post(
         "http://localhost:8000/users/login",
         values,
@@ -45,7 +44,7 @@ const Login = () => {
           label="Email"
           name="email"
           rules={[
-            { required: true, message: "Please input   your email!" },
+            { required: true, message: "Please input your email!" },
             { type: "email", message: "Please enter a valid email address" },
           ]}
         >
@@ -78,7 +77,7 @@ const Login = () => {
           </Button>
         </Form.Item>
       </Form>
-      <h4>{message}</h4>
+      {message && <h4>"Message:"{message}</h4>}
     </>
   );
 };

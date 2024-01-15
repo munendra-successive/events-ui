@@ -44,6 +44,7 @@ const useList = () => {
       render: (record) => (
         <>
           <Button
+            data-testid="view"
             style={{ margin: "10px" }}
             type="primary"
             onClick={() => navigate(`/view/${record._id}`)}
@@ -67,34 +68,14 @@ const useList = () => {
   const [data, setData] = useState([]);
   const [id, setId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const [searchQuery, setSearchQuery] = useState("");
+  const [query, setQuery] = useState(null);
   const [isRefresh, setRefresh] = useState(false);
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10,
     total: 0,
   });
-
-  const handleChange = async (value) => {
-    try {
-      const response = await axios.get(
-        `http://localhost:8000/events/find/${value}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      setData(response.data["data"]);
-      setPagination({
-        ...pagination,
-        total: response.data.datalength,
-      });
-    } catch (error) {
-      console.error("Error fetching data: ", error);
-    }
-  };
 
   const handleOk = async () => {
     try {
@@ -116,32 +97,14 @@ const useList = () => {
     setId(record._id);
     setIsModalOpen(true);
   };
-  const handleSearch = async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:8000/events/search/?search=${searchQuery}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      setData(response.data["data"]);
-      setPagination({
-        ...pagination,
-        total: response.data.datalength - pagination.pageSize,
-      });
-    } catch (error) {
-      setData([]);
-      console.error("Error fetching data: ", error);
-    }
-  };
+
   const fetchData = async () => {
     try {
       const response = await axios.get(`http://localhost:8000/events/get`, {
         params: {
           current: pagination.current,
           pageSize: pagination.pageSize,
+          query: query,
         },
 
         headers: {
@@ -165,6 +128,8 @@ const useList = () => {
     id,
     setId,
     searchQuery,
+    query,
+    setQuery,
     setSearchQuery,
     isRefresh,
     setRefresh,
@@ -172,8 +137,6 @@ const useList = () => {
     setPagination,
     isModalOpen,
     handleActionDelete,
-    handleSearch,
-    handleChange,
     handleOk,
     setIsModalOpen,
     columns,

@@ -21,7 +21,7 @@ const Sidebar = ({ children }) => {
               <Link to="/list">List</Link>
             </Menu.Item>
             <Menu.Item key="bulkUpload">
-              <Link to="/bulkDetails">Bulk  Listing</Link>
+              <Link to="/bulkDetails">Bulk Listing</Link>
             </Menu.Item>
             <Menu.Item key="logout">
               <Link

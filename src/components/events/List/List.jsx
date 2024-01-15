@@ -14,13 +14,12 @@ const List = () => {
     data,
     searchQuery,
     setSearchQuery,
-
+    setQuery,
     isRefresh,
     pagination,
     setPagination,
-    handleChange,
-    handleSearch,
     handleOk,
+    query,
     isModalOpen,
     setIsModalOpen,
     columns,
@@ -29,84 +28,96 @@ const List = () => {
 
   useEffect(() => {
     fetchData();
-  }, [pagination.current, pagination.pageSize]);
+  }, [pagination.current, pagination.pageSize, query, isRefresh]);
 
   return (
-    <>
-      <Sidebar>
-        {login && isAuthenticated() ? (
-          <div>
-            <div style={{ display: "flex", margin: "10px" }}>
-              <Select
-                style={{ width: 200, marginRight: "16px" }}
-                placeholder="Select an Type"
-                onChange={handleChange}
-              >
-                <Option value="Game">Game</Option>
-                <Option value="Performance">Performance</Option>
-                <Option value="Show">Show</Option>
-                <Option value="Class">Class</Option>
-                <Option value="Talk">Talk</Option>
-                <Option value="Concert">Concert</Option>
-              </Select>
-              <input
-                type="text"
-                placeholder="Search"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    handleSearch();
-                  }
-                }}
-                style={{
-                  marginRight: "16px",
-                  padding: "4px",
-                  borderRadius: "8px",
-                  borderBlockColor: "lightgray",
-                }}
-              />
-
-              <div
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  right: 0,
-                  margin: "10px",
-                  marginRight: "10%",
-                }}
-              >
-                <Button type="primary" onClick={() => navigate("/create")}>
-                  Create
-                </Button>
-                <Button type="primary" onClick={() => navigate("/bulkUpload")}>
-                  Upload Csv
-                </Button>
-              </div>
-            </div>
-            <div style={{ minHeight: "calc(100vh - 96px)" }}>
-              <Table
-                dataSource={data}
-                columns={columns}
-                pagination={pagination}
-                onChange={(pagin) => setPagination(pagin)}
-              />
-            </div>
-
-            <Modal
-              title="Confirm Delete"
-              open={isModalOpen}
-              onOk={handleOk}
-              onCancel={() => setIsModalOpen(false)}
+    <Sidebar>
+      {login ? (
+        <div>
+          <div style={{ display: "flex", margin: "10px" }}>
+            <Select
+              data-testid="select"
+              style={{ width: 200, marginRight: "16px" }}
+              placeholder="Select an Type"
+              onChange={(value) => {
+                setQuery(value);
+                setPagination({
+                  current: 1,
+                  pageSize: 10,
+                  total: 0,
+                });
+              }}
             >
-              <p>Do you want to Delete</p>
-            </Modal>
+              <Option value="GameFilter">Game</Option>
+              <Option value="PerformanceFilter">Performance</Option>
+              <Option value="ShowFilter">Show</Option>
+              <Option value="ClassFilter">Class</Option>
+              <Option value="TalkFilter">Talk</Option>
+              <Option value="ConcertFilter">Concert</Option>
+            </Select>
+            <input
+              type="text"
+              placeholder="Search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  setQuery(searchQuery);
+                  setPagination({
+                    current: 1,
+                    pageSize: 10,
+                    total: 0,
+                  });
+                }
+              }}
+              style={{
+                marginRight: "16px",
+                padding: "4px",
+                borderRadius: "8px",
+                borderBlockColor: "lightgray",
+              }}
+            />
+
+            <div
+              style={{
+                position: "absolute",
+                top: 0,
+                right: 0,
+                margin: "10px",
+                marginRight: "10%",
+              }}
+            >
+              <Button type="primary" onClick={() => navigate("/create")}>
+                Create
+              </Button>
+              <Button type="primary" onClick={() => navigate("/bulkUpload")}>
+                Upload Csv
+              </Button>
+            </div>
           </div>
-        ) : (
-          navigate("/")
-        )}
-      </Sidebar>
-    </>
+          <div style={{ minHeight: "calc(100vh - 96px)" }}>
+            <Table
+              data-testid="table"
+              dataSource={data}
+              columns={columns}
+              pagination={pagination}
+              onChange={(pagin) => setPagination(pagin)}
+            />
+          </div>
+
+          <Modal
+            title="Confirm Delete"
+            open={isModalOpen}
+            onOk={handleOk}
+            onCancel={() => setIsModalOpen(false)}
+          >
+            <p>Do you want to Delete</p>
+          </Modal>
+        </div>
+      ) : (
+        navigate("/")
+      )}
+    </Sidebar>
   );
 };
 

@@ -12,7 +12,7 @@ const BulkList = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8000/events/getall`,
+          `http://localhost:8000/events/getBulk`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -57,7 +57,7 @@ const BulkList = () => {
           style={{ margin: "10px" }}
           type="primary"
         >
-          View Logs
+          <div data-testid="munendra">View Log</div>
         </Button>
       ),
     },

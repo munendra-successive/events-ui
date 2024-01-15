@@ -18,10 +18,10 @@ Object.defineProperty(window, "matchMedia", {
 });
 
 describe("Testing Logs  Page", () => {
-  const mockUserAuthValue = {
-    login: true,
-  };
   test("Testing Logs Page correctly rendering or not", () => {
+    const mockUserAuthValue = {
+      login: true,
+    };
     render(
       <UserAuth.Provider value={mockUserAuthValue}>
         <BrowserRouter>
@@ -35,8 +35,19 @@ describe("Testing Logs  Page", () => {
     expect(screen.getByText("Error Details")).toBeInTheDocument();
     expect(screen.getByText("Row Number")).toBeInTheDocument();
     expect(screen.getByText("Error Message")).toBeInTheDocument();
+  });
 
-
-
+  test("Testing Logs Page correctly rendering or not", () => {
+    const mockUserAuthValue = {
+      login: false,
+    };
+    render(
+      <UserAuth.Provider value={mockUserAuthValue}>
+        <BrowserRouter>
+          <Logs />
+        </BrowserRouter>
+      </UserAuth.Provider>
+    );
+    expect(window.location.pathname).toBe("/");
   });
 });

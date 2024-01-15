@@ -3,11 +3,9 @@ import Router from "./components/Router";
 import { UserAuthContext } from "./components";
 function App() {
   return (
-    <>
-      <UserAuthContext>
-        <Router />
-      </UserAuthContext>
-    </>
+    <UserAuthContext>
+      <Router />
+    </UserAuthContext>
   );
 }
 

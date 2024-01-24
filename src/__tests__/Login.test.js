@@ -21,7 +21,6 @@ Object.defineProperty(window, "matchMedia", {
 jest.mock("axios");
 const navigate = jest.fn();
 describe("Testing Login Page", () => {
-  const login = true;
   const setLogin = jest.fn();
   test("Testing Login Page correctly rendering or not", () => {
     render(
@@ -39,7 +38,7 @@ describe("Testing Login Page", () => {
 
   test("Testing Login Page for successful login", async () => {
     axios.post.mockResolvedValue({
-      data: { message: "Login Successful" }
+      data: { message: "Login Successful" },
     });
     render(
       <UserAuth.Provider value={{ setLogin }}>
@@ -63,9 +62,11 @@ describe("Testing Login Page", () => {
     });
   });
 
-  test("Testing Login Page displays error message on unsuccessful login", async () => {
-    axios.post.mockResolvedValue({
-      data: { message: "Invalid Credentials" },
+  test("Testing Login Page  if invalid credentials provided", async () => {
+    axios.post.mockRejectedValue({
+      response: {
+        status: 401,
+      },
     });
     render(
       <UserAuth.Provider value={{ setLogin }}>
@@ -82,14 +83,13 @@ describe("Testing Login Page", () => {
     fireEvent.change(emailInput, { target: { value: "test@example.com" } });
     fireEvent.change(passwordInput, { target: { value: "password123" } });
     fireEvent.click(loginButton);
-    waitFor(() => {
-      expect(screen.getByText("Invalid Credentials")).toBeInTheDocument();
-    });
   });
 
-  test("Testing Login Page  if an error occurs", async () => {
+  test("Testing Login Page  if error occurs", async () => {
     axios.post.mockRejectedValue({
-      data: { message: "Invalid Credentials" },
+      response: {
+        status: 500,
+      },
     });
     render(
       <UserAuth.Provider value={{ setLogin }}>

@@ -1,7 +1,8 @@
 import React, { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Layout, Menu } from "antd";
-import { UserAuth } from "./index";
+import PropTypes from "prop-types";
+import { UserAuth } from "../index";
 
 const Sidebar = ({ children }) => {
   const { setLogin } = useContext(UserAuth);
@@ -17,10 +18,13 @@ const Sidebar = ({ children }) => {
             defaultSelectedKeys={["list"]}
             style={{ height: "100%", borderRight: 0 }}
           >
-            <Menu.Item key="list">
+            <Menu.Item key="list" onClick={() => navigate("/list")}>
               <Link to="/list">List</Link>
             </Menu.Item>
-            <Menu.Item key="bulkUpload">
+            <Menu.Item
+              key="bulkUpload"
+              onClick={() => navigate("/bulkDetails")}
+            >
               <Link to="/bulkDetails">Bulk Listing</Link>
             </Menu.Item>
             <Menu.Item key="logout">
@@ -43,6 +47,10 @@ const Sidebar = ({ children }) => {
       </Layout>
     </div>
   );
+};
+
+Sidebar.propTypes = {
+  children: PropTypes.node.isRequired,
 };
 
 export default Sidebar;

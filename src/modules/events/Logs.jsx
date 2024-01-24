@@ -1,9 +1,10 @@
 import React, { useContext, useState, useEffect } from "react";
 import axios from "axios";
-import { Table } from "antd";
+import { Table, message } from "antd";
 import { UserAuth } from "../user/UserAuthContext";
 import { useNavigate, useParams } from "react-router-dom";
-import Sidebar from "../Sidebar";
+import Sidebar from "./Sidebar";
+import { setHeader } from "./setHeader";
 const Logs = () => {
   const columns = [
     {
@@ -31,12 +32,10 @@ const Logs = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8000/events/getByUploadId/${uploadId}/?current=${pagination.current}&pageSize=${pagination.pageSize}`,
+          `${process.env.REACT_APP_SERVER_URL}/events/getByUploadId/${uploadId}/?current=${pagination.current}&pageSize=${pagination.pageSize}`,
 
           {
-            headers: {
-              "Content-Type": "application/json",
-            },
+            headers: setHeader.json,
           }
         );
         setData(response.data.data);
@@ -45,11 +44,18 @@ const Logs = () => {
           total: response.data.datalength,
         });
       } catch (error) {
-        console.error("Error fetching data: ", error);
+        if (error.response.status == 403) {
+          message.error({
+            type: "error",
+            content: "You are Unauthorized, Please Login",
+            duration: 2,
+          });
+          navigate("/");
+        } else console.error("Error fetching data: ", error);
       }
     };
     fetchData();
-  }, [uploadId, pagination.current, pagination.pageSize]);
+  }, [pagination.current, pagination.pageSize]);
 
   return (
     <Sidebar>

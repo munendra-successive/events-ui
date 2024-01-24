@@ -24,19 +24,11 @@ const setLogin = jest.fn();
 describe("Testing BulkList Page", () => {
   const mockUserAuthValue = {
     login: true,
+    isAuthenticated: function () {
+      return true;
+    },
   };
-  test("Testing BUlkList Page correctly rendering or not", () => {
-    render(
-      <UserAuth.Provider value={mockUserAuthValue}>
-        <BrowserRouter>
-          <BulkList />
-        </BrowserRouter>
-      </UserAuth.Provider>
-    );
-  });
-  // This test checks if the data is fetched correctly and set in the state.
-
-  test("Testing data fetching and state update in BulkList component", async () => {
+  test("Testing BulkList Page correctly rendering or not", async () => {
     const mockData = [
       {
         fileName: "file1.csv",
@@ -45,15 +37,25 @@ describe("Testing BulkList Page", () => {
         startTime: "2021-10-01",
         uploadId: "12345",
       },
-      {
-        fileName: "file2.csv",
-        successfulInserted: 15,
-        failedDuringInsert: 2,
-        startTime: "2021-10-02",
-        uploadId: "67890",
-      },
     ];
-    axios.get.mockResolvedValueOnce({ data: mockData });
+    axios.get.mockResolvedValue({ data: { data: mockData } });
+    render(
+      <UserAuth.Provider value={mockUserAuthValue}>
+        <BrowserRouter>
+          <BulkList />
+        </BrowserRouter>
+      </UserAuth.Provider>
+    );
+    await waitFor(() => {
+      expect(screen.getByText("file1.csv")).toBeInTheDocument();
+      const logButton = screen.getByText("View Log");
+      fireEvent.click(logButton);
+      expect(window.location.pathname).toBe("/logs/12345");
+    });
+  });
+
+  test("Testing  fetching data if user is unauthorized", async () => {
+    axios.get.mockRejectedValue({ response: { status: 403 } });
     render(
       <UserAuth.Provider value={{ setLogin }}>
         <BrowserRouter>
@@ -63,14 +65,18 @@ describe("Testing BulkList Page", () => {
     );
 
     await waitFor(() => {
-      expect(axios.get).toHaveBeenCalledWith(
-        "http://localhost:8000/events/getBulk",
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      expect(window.location.pathname).toBe("/");
     });
+  });
+
+  test("Testing  fetching data if error occurs", async () => {
+    axios.get.mockRejectedValue({ response: { status: 500 } });
+    render(
+      <UserAuth.Provider value={{ setLogin }}>
+        <BrowserRouter>
+          <BulkList />
+        </BrowserRouter>
+      </UserAuth.Provider>
+    );
   });
 });

@@ -20,6 +20,26 @@ Object.defineProperty(window, "matchMedia", {
 jest.mock("axios");
 describe("Testing View  Page", () => {
   test("Testing if data is fetched successfully", async () => {
+    const mockData = {
+      _id: "65ae0267d0dc76fce4e375ea",
+      name: "Music Event - 7540",
+      address: {
+        street: "163 Main St.",
+        city: "San Francisco",
+        state: "IL",
+        postalCode: "54836",
+        country: "USA",
+      },
+      description: "A Theater event happening in the heart of Seattle.",
+      startDate: "2024-02-26T18:30:00.000Z",
+      endDate: "2024-12-01T00:00:00.000Z",
+      category: "Comedy",
+      organizerInfo: "Ticketmaster",
+      type: "Game",
+      status: "Tickets on sale",
+    };
+
+    axios.get.mockResolvedValue({ data: { data: [mockData] } });
     const login = true;
     render(
       <UserAuth.Provider value={{ login }}>
@@ -28,9 +48,18 @@ describe("Testing View  Page", () => {
         </BrowserRouter>
       </UserAuth.Provider>
     );
+    await waitFor(() => {
+      expect(screen.getByText("Tickets on sale")).toBeInTheDocument();
+      expect(
+        screen.getByText("A Theater event happening in the heart of Seattle.")
+      ).toBeInTheDocument();
+      expect(screen.getByText("2024-02-26T18:30:00.000Z")).toBeInTheDocument();
+      expect(screen.getByText("Music Event - 7540")).toBeInTheDocument();
+    });
   });
-  test("Testing if user is not authenticated", () => {
-    const login = false;
+  test("Testing if user is not authenticated", async () => {
+    axios.get.mockRejectedValue({ response: { status: 403 } });
+    const login = true;
     render(
       <UserAuth.Provider value={{ login }}>
         <BrowserRouter>
@@ -38,6 +67,26 @@ describe("Testing View  Page", () => {
         </BrowserRouter>
       </UserAuth.Provider>
     );
-    expect(window.location.pathname).toBe("/");
+    await waitFor(() => {
+      expect(
+        screen.getByText("You are Unauthorized, Please Login")
+      ).toBeInTheDocument();
+      expect(window.location.pathname).toBe("/");
+    });
+  });
+
+  test("Testing if an error occurs", async () => {
+    axios.get.mockRejectedValue({ response: { status: 500 } });
+    const login = true;
+    render(
+      <UserAuth.Provider value={{ login }}>
+        <BrowserRouter>
+          <View />
+        </BrowserRouter>
+      </UserAuth.Provider>
+    );
+    await waitFor(() => {
+      expect(screen.queryByText("Tickets on sale")).toBe(null);
+    });
   });
 });

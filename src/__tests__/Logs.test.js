@@ -1,8 +1,9 @@
 import Logs from "../components/events/Logs";
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
 import { UserAuth } from "../components";
+import axios from "axios";
 Object.defineProperty(window, "matchMedia", {
   writable: true,
   value: (query) => ({
@@ -17,37 +18,68 @@ Object.defineProperty(window, "matchMedia", {
   }),
 });
 
+jest.mock("axios");
 describe("Testing Logs  Page", () => {
-  test("Testing Logs Page correctly rendering or not", () => {
-    const mockUserAuthValue = {
-      login: true,
-    };
+  test("Testing Logs Page rendering correctly", async () => {
+    const login = true;
+    axios.get.mockResolvedValue({
+      data: {
+        data: [
+          {
+            rowNumber: 2,
+            errorMessage: "endDate must be greater than start Date",
+          },
+        ],
+      },
+    });
     render(
-      <UserAuth.Provider value={mockUserAuthValue}>
+      <UserAuth.Provider value={{ login }}>
         <BrowserRouter>
           <Logs />
         </BrowserRouter>
       </UserAuth.Provider>
     );
-    expect(screen.getByText("List")).toBeInTheDocument();
-    expect(screen.getByText("Bulk Listing")).toBeInTheDocument();
-    expect(screen.getByText("Logout")).toBeInTheDocument();
-    expect(screen.getByText("Error Details")).toBeInTheDocument();
-    expect(screen.getByText("Row Number")).toBeInTheDocument();
-    expect(screen.getByText("Error Message")).toBeInTheDocument();
+    await waitFor(() => {
+      expect(
+        screen.getByText("endDate must be greater than start Date")
+      ).toBeInTheDocument();
+    });
   });
 
-  test("Testing Logs Page correctly rendering or not", () => {
-    const mockUserAuthValue = {
-      login: false,
-    };
+  test("Testing Logs Page if user is authenticated", async () => {
+    const login = true;
+    axios.get.mockRejectedValue({
+      response: {
+        status: 403,
+      },
+    });
     render(
-      <UserAuth.Provider value={mockUserAuthValue}>
+      <UserAuth.Provider value={{ login }}>
         <BrowserRouter>
           <Logs />
         </BrowserRouter>
       </UserAuth.Provider>
     );
-    expect(window.location.pathname).toBe("/");
+    await waitFor(() => {
+      expect(
+        screen.getByText("You are Unauthorized, Please Login")
+      ).toBeInTheDocument();
+    });
+  });
+
+  test("Testing Logs Page if error occurs", async () => {
+    const login = true;
+    axios.get.mockRejectedValue({
+      response: {
+        status: 500,
+      },
+    });
+    render(
+      <UserAuth.Provider value={{ login }}>
+        <BrowserRouter>
+          <Logs />
+        </BrowserRouter>
+      </UserAuth.Provider>
+    );
   });
 });

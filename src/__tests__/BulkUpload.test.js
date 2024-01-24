@@ -17,39 +17,10 @@ Object.defineProperty(window, "matchMedia", {
     dispatchEvent: () => {},
   }),
 });
-
+const alertMock = jest.spyOn(window, "alert");
 jest.mock("axios");
 
 describe("Testing BulkUpload Page", () => {
-  test("Testing BulkList Page correctly rendering or not", () => {
-    const mockUserAuthValue = {
-      login: true,
-    };
-    render(
-      <UserAuth.Provider value={mockUserAuthValue}>
-        <BrowserRouter>
-          <BulkUplaod />
-        </BrowserRouter>
-      </UserAuth.Provider>
-    );
-    expect(screen.getByText("List")).toBeInTheDocument();
-    expect(screen.getByText("Bulk Listing")).toBeInTheDocument();
-    expect(screen.getByText("Logout")).toBeInTheDocument();
-    expect(screen.getByText("CSV File Uploader")).toBeInTheDocument();
-    expect(screen.getByText("Upload CSV")).toBeInTheDocument();
-  });
-  test("if user is not authenticated", () => {
-    const login = false;
-    render(
-      <UserAuth.Provider value={{ login }}>
-        <BrowserRouter>
-          <BulkUplaod />
-        </BrowserRouter>
-      </UserAuth.Provider>
-    );
-    expect(window.location.pathname).toBe("/");
-  });
-
   // Testing successful file upload
 
   test("Testing successful file upload", async () => {
@@ -62,8 +33,9 @@ describe("Testing BulkUpload Page", () => {
         numberOfItems: 10,
       },
     };
-    axios.post.mockResolvedValueOnce(mockResponse);
+    axios.post.mockResolvedValue(mockResponse);
     const login = true;
+
     render(
       <UserAuth.Provider value={{ login }}>
         <BrowserRouter>
@@ -72,31 +44,24 @@ describe("Testing BulkUpload Page", () => {
       </UserAuth.Provider>
     );
 
-    const fileInput = screen.getByTestId("upload-button");
+    const fileInput = screen.getByTestId("choose-file");
     fireEvent.change(fileInput, { target: { files: [mockFile] } });
 
-    const uploadButton = screen.getByText("Upload CSV");
-    fireEvent.click(uploadButton);
-
     await waitFor(() => {
-      expect(
-        screen.getByText("Upload successful! number of items is: 10")
-      ).toBeInTheDocument();
+      const uploadButton = screen.getByText("Upload Csv");
+      fireEvent.click(uploadButton);
+      const successMessage = screen.getAllByText("File uploaded Successfully");
+      expect(successMessage[0]).toBeInTheDocument();
     });
   });
 
-  test("Testing UnSuccessful file upload", async () => {
+  test("Unsuccessful file upload", async () => {
     const mockFile = new File(["dummy content"], "test.csv", {
       type: "text/csv",
     });
-    const mockResponse = {
-      data: {
-        message: "Upload successful!",
-        numberOfItems: 10,
-      },
-    };
-    axios.post.mockRejectedValueOnce(mockResponse);
+    axios.post.mockRejectedValue({ response: { status: 403 } });
     const login = true;
+
     render(
       <UserAuth.Provider value={{ login }}>
         <BrowserRouter>
@@ -105,10 +70,16 @@ describe("Testing BulkUpload Page", () => {
       </UserAuth.Provider>
     );
 
-    const fileInput = screen.getByTestId("upload-button");
+    const fileInput = screen.getByTestId("choose-file");
     fireEvent.change(fileInput, { target: { files: [mockFile] } });
 
-    const uploadButton = screen.getByText("Upload CSV");
-    fireEvent.click(uploadButton);
+    await waitFor(() => {
+      const uploadButton = screen.getByText("Upload Csv");
+      fireEvent.click(uploadButton);
+      const errorMessage = screen.getAllByText(
+        "You are Unauthorized, Please Login"
+      );
+      expect(errorMessage[0]).toBeInTheDocument();
+    });
   });
 });

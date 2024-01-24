@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { Button } from "antd";
+import { Button, message } from "antd";
 import { useNavigate } from "react-router-dom";
+import { setHeader } from "../setHeader";
 import axios from "axios";
+import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 
 const useList = () => {
   const navigate = useNavigate();
@@ -29,7 +31,7 @@ const useList = () => {
       key: "category",
     },
     {
-      title: "Type",
+      title: "Organizer",
       dataIndex: "organizerInfo",
       key: "organizerInfo",
     },
@@ -39,27 +41,35 @@ const useList = () => {
       key: "type",
     },
     {
-      title: "View/Edit",
+      title: "View Edit Delete",
       key: "action",
       render: (record) => (
         <>
           <Button
-            data-testid="view"
+            data-testid="view-btn"
             style={{ margin: "10px" }}
-            type="primary"
+            type="link"
+            size="large"
             onClick={() => navigate(`/view/${record._id}`)}
           >
-            View
+            <EyeOutlined />
           </Button>
           <Button
-            type="primary"
+            type="link"
+            data-testid="edit-btn"
+            size="large"
             onClick={() => navigate(`/edit/${record._id}`)}
           >
-            Edit
+            <EditOutlined />
           </Button>
 
-          <Button type="primary" onClick={() => handleActionDelete(record)}>
-            Delete
+          <Button
+            type="link"
+            size="large"
+            data-testid="delete-btn"
+            onClick={() => handleActionDelete(record)}
+          >
+            <DeleteOutlined />
           </Button>
         </>
       ),
@@ -70,7 +80,7 @@ const useList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [query, setQuery] = useState(null);
-  const [isRefresh, setRefresh] = useState(false);
+  const [isRefresh, setIsRefresh] = useState(false);
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10,
@@ -79,15 +89,28 @@ const useList = () => {
 
   const handleOk = async () => {
     try {
-      await axios.delete(`http://localhost:8000/events/deleteById/${id}`, {
-        headers: {
-          "Content-Type": "application/json",
-        },
+      await axios.delete(
+        `${process.env.REACT_APP_SERVER_URL}/events/deleteById/${id}`,
+        {
+          headers: setHeader.json,
+        }
+      );
+
+      message.success({
+        type: "success",
+        content: "Deleted Successfully",
+        duration: 2,
       });
-      alert("Deleted Successfully");
-      setRefresh(!isRefresh);
+      setIsRefresh(!isRefresh);
     } catch (error) {
-      console.error("Error in deleteing data: ", error);
+      if (error.response?.status === 403) {
+        navigate("/");
+        message.error({
+          type: "error",
+          content: "You are Unauthorized, Please Login",
+          duration: 2,
+        });
+      } else console.error("Error in deleteing data: ", error);
     } finally {
       setIsModalOpen(false);
     }
@@ -100,24 +123,32 @@ const useList = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(`http://localhost:8000/events/get`, {
-        params: {
-          current: pagination.current,
-          pageSize: pagination.pageSize,
-          query: query,
-        },
+      const response = await axios.get(
+        `${process.env.REACT_APP_SERVER_URL}/events/get`,
+        {
+          params: {
+            current: pagination.current,
+            pageSize: pagination.pageSize,
+            query: query,
+          },
 
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+          headers: setHeader.json,
+        }
+      );
       setData(response.data["data"]);
       setPagination({
         ...pagination,
         total: response.data.datalength,
       });
     } catch (error) {
-      console.error("Error fetching data: ", error);
+      if (error.response.status === 403) {
+        navigate("/");
+        message.error({
+          type: "error",
+          content: "You are Unauthorized, Please Login",
+          duration: 2,
+        });
+      } else console.error("Error fetching data: ", error);
     }
   };
 
@@ -132,7 +163,7 @@ const useList = () => {
     setQuery,
     setSearchQuery,
     isRefresh,
-    setRefresh,
+    setIsRefresh,
     pagination,
     setPagination,
     isModalOpen,

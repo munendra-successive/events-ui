@@ -7,8 +7,7 @@ scanner(
     token: userToken,
     options: {
       "sonar.sources": "./src",
-      "sonar.exclusions":
-        "**/__tests__/**,src/index.js,src/reportWebVitals.js,/src/**/useList.jsx",
+      "sonar.exclusions": "**/__tests__/**,src/index.js,src/reportWebVitals.js",
     },
   },
   () => process.exit()

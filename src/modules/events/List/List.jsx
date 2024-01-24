@@ -3,7 +3,7 @@ import { Select, Button, Table, Modal } from "antd";
 import { useNavigate } from "react-router-dom";
 import { UserAuth } from "../../index";
 import useList from "./useList";
-import Sidebar from "../../Sidebar";
+import Sidebar from "../Sidebar";
 const { Option } = Select;
 
 const List = () => {
@@ -24,7 +24,7 @@ const List = () => {
     setIsModalOpen,
     columns,
   } = useList();
-  const { login, isAuthenticated } = useContext(UserAuth);
+  const { login } = useContext(UserAuth);
 
   useEffect(() => {
     fetchData();
@@ -36,7 +36,6 @@ const List = () => {
         <div>
           <div style={{ display: "flex", margin: "10px" }}>
             <Select
-              data-testid="select"
               style={{ width: 200, marginRight: "16px" }}
               placeholder="Select an Type"
               onChange={(value) => {
@@ -87,10 +86,10 @@ const List = () => {
                 marginRight: "10%",
               }}
             >
-              <Button type="primary" onClick={() => navigate("/create")}>
+              <Button type="link" onClick={() => navigate("/edit/create")}>
                 Create
               </Button>
-              <Button type="primary" onClick={() => navigate("/bulkUpload")}>
+              <Button type="link" onClick={() => navigate("/bulkUpload")}>
                 Upload Csv
               </Button>
             </div>
@@ -106,6 +105,7 @@ const List = () => {
           </div>
 
           <Modal
+            data-testid="confirm-delete"
             title="Confirm Delete"
             open={isModalOpen}
             onOk={handleOk}

@@ -1,6 +1,12 @@
 import { List } from "../components";
 import React from "react";
-import { render, screen, fireEvent, queryByText } from "@testing-library/react";
+import {
+  render,
+  screen,
+  fireEvent,
+  queryByText,
+  waitFor,
+} from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
 import { UserAuth } from "../components";
 Object.defineProperty(window, "matchMedia", {
@@ -56,7 +62,7 @@ describe("Testing List Page", () => {
     );
     const createButtton = screen.getByText("Create");
     fireEvent.click(createButtton);
-    expect(window.location.pathname).toBe("/create");
+    expect(window.location.pathname).toBe("/edit/create");
     const uploadCsvButton = screen.getByText("Upload Csv");
     fireEvent.click(uploadCsvButton);
     expect(window.location.pathname).toBe("/bulkUpload");
@@ -78,15 +84,10 @@ describe("Testing List Page", () => {
     );
   });
 
-  test("Testing  Serach Bar", () => {
-    const mockUserAuthValue = {
-      login: true,
-      isAuthenticated: function () {
-        return true;
-      },
-    };
+  test("Testing  Serach Bar", async () => {
+    const login = true;
     render(
-      <UserAuth.Provider value={mockUserAuthValue}>
+      <UserAuth.Provider value={{ login }}>
         <BrowserRouter>
           <List />
         </BrowserRouter>
@@ -97,21 +98,5 @@ describe("Testing List Page", () => {
     fireEvent.keyDown(searchBar, { key: "Enter", code: "Enter" });
   });
 
-  // test("Testing  Filter Options", () => {
-  //   const mockUserAuthValue = {
-  //     login: true,
-  //     isAuthenticated: function () {
-  //       return true;
-  //     },
-  //   };
-  //   render(
-  //     <UserAuth.Provider value={mockUserAuthValue}>
-  //       <BrowserRouter>
-  //         <List />
-  //       </BrowserRouter>
-  //     </UserAuth.Provider>
-  //   );
-  //   const filterInput = screen.getByTestId("view");
-  //   expect(filterInput).toBeInTheDocument();
-  // });
+  
 });

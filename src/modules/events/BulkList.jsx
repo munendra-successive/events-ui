@@ -1,27 +1,34 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
-import { Table, Button } from "antd";
+import { Table, Button, message } from "antd";
 import { useNavigate } from "react-router-dom";
-import Sidebar from "../Sidebar";
+import { setHeader } from "./setHeader";
+import Sidebar from "./Sidebar";
+import { UserAuth } from "../user";
 
 const BulkList = () => {
   const [data, setData] = useState([]);
   const navigate = useNavigate();
-
+  const { login } = useContext(UserAuth);
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8000/events/getBulk`,
+          `${process.env.REACT_APP_SERVER_URL}/events/getBulk`,
           {
-            headers: {
-              "Content-Type": "application/json",
-            },
+            headers: setHeader.json,
           }
         );
         setData(response.data["data"]);
       } catch (error) {
-        console.error("Error fetching data: ", error);
+        if (error.response.status === 403) {
+          navigate("/");
+          message.error({
+            type: "error",
+            content: "You are Unauthorized, Please Login",
+            duration: 2,
+          });
+        } else console.error("Error fetching data: ", error);
       }
     };
     fetchData();
@@ -34,12 +41,12 @@ const BulkList = () => {
       key: "fileName",
     },
     {
-      title: "SuccessfulInserted",
+      title: "Successful Inserted",
       dataIndex: "successfulInserted",
       key: "successfulInserted",
     },
     {
-      title: "FailedDuringInsert",
+      title: "Failed During Insert",
       dataIndex: "failedDuringInsert",
       key: "failedDuringInsert",
     },
@@ -49,15 +56,16 @@ const BulkList = () => {
       key: "startTime",
     },
     {
-      title: "View Logs",
+      title: "Logs",
       key: "action",
       render: (text, record) => (
         <Button
+          data-testid="view-log-button"
           onClick={() => handleClick(record.uploadId)}
           style={{ margin: "10px" }}
-          type="primary"
+          type="link"
         >
-          <div data-testid="munendra">View Log</div>
+          View Log
         </Button>
       ),
     },
@@ -68,12 +76,16 @@ const BulkList = () => {
   };
 
   return (
-    <div>
-      <Sidebar>
-        <h2>BulkList</h2>
-        <Table dataSource={data} columns={columns} />
-      </Sidebar>
-    </div>
+    <Sidebar>
+      {login ? (
+        <>
+          <h2>BulkList</h2>
+          <Table dataSource={data} columns={columns} />
+        </>
+      ) : (
+        navigate("/")
+      )}
+    </Sidebar>
   );
 };
 

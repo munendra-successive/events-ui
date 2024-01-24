@@ -1,11 +1,14 @@
 import "./App.css";
-import Router from "./components/Router";
-import { UserAuthContext } from "./components";
+import { Suspense } from "react";
+import Router from "./utils/Router";
+import { UserAuthContext } from "./modules";
 function App() {
   return (
-    <UserAuthContext>
-      <Router />
-    </UserAuthContext>
+    <Suspense fallback={<div>Loading...</div>}>
+      <UserAuthContext>
+        <Router />
+      </UserAuthContext>
+    </Suspense>
   );
 }
 

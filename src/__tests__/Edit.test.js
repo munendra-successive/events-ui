@@ -1,9 +1,16 @@
 import { Edit } from "../components";
 import React from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { BrowserRouter } from "react-router-dom";
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  queryByText,
+} from "@testing-library/react";
+import { BrowserRouter, useParams } from "react-router-dom";
 import { UserAuth } from "../components";
 import axios from "axios";
+
 Object.defineProperty(window, "matchMedia", {
   writable: true,
   value: (query) => ({
@@ -17,30 +24,40 @@ Object.defineProperty(window, "matchMedia", {
     dispatchEvent: () => {},
   }),
 });
+jest.mock("react-router-dom", () => ({
+  ...jest.requireActual("react-router-dom"),
+  useParams: () => ({ id: "123" }),
+}));
+
 jest.mock("axios");
-
-describe("Testing Edit Page", () => {
-
-  test("Testing Edit Page  displaying event data", async () => {
-    const mockEventData = {
-      name: "Test Event",
-      address: {
-        street: "Test Street",
-        city: "Test City",
-        state: "Test State",
-        postalCode: "12345",
-        country: "Test Country",
-      },
-      description: "Test Description",
-      startDate: "2022-01-01",
-      endDate: "2022-01-02",
-      category: "Test Category",
-      organizerInfo: "Test Organizer",
-      type: "Test Type",
-      status: "Test Status",
-    };
-    axios.get.mockResolvedValueOnce({ data: { data: [mockEventData] } });
+const alertMock = jest.spyOn(window, "alert");
+describe("Testing for  Edit functionality", () => {
+  test("Testing Edit Page fetches data correctly", async () => {
     const login = true;
+    const mockResponse = {
+      data: {
+        data: [
+          {
+            name: "Event Name",
+            address: {
+              street: "Street",
+              city: "City",
+              state: "State",
+              postalCode: "Postal Code",
+              country: "Country",
+            },
+            description: "Event Description",
+            startDate: "2022-01-01",
+            endDate: "2022-01-02",
+            category: "Event Category",
+            organizerInfo: "Organizer Info",
+            type: "Event Type",
+            status: "Event Status",
+          },
+        ],
+      },
+    };
+    axios.get.mockResolvedValue(mockResponse);
     render(
       <UserAuth.Provider value={{ login }}>
         <BrowserRouter>
@@ -48,30 +65,88 @@ describe("Testing Edit Page", () => {
         </BrowserRouter>
       </UserAuth.Provider>
     );
-
-    waitFor(() => {
-      expect(screen.getByLabelText("Event Name")).toHaveValue("Test Event");
-      expect(screen.getByLabelText("Street")).toHaveValue("Test Street");
-      expect(screen.getByLabelText("City")).toHaveValue("Test City");
-      expect(screen.getByLabelText("State")).toHaveValue("Test State");
-      expect(screen.getByLabelText("Postal Code")).toHaveValue("12345");
-      expect(screen.getByLabelText("Country")).toHaveValue("Test Country");
+    await waitFor(() => {
+      expect(screen.getByLabelText("Event Name")).toHaveValue("Event Name");
+      expect(screen.getByPlaceholderText("Street")).toHaveValue("Street");
+      expect(screen.getByPlaceholderText("City")).toHaveValue("City");
+      expect(screen.getByPlaceholderText("State")).toHaveValue("State");
+      expect(screen.getByPlaceholderText("Postal Code")).toHaveValue(
+        "Postal Code"
+      );
+      expect(screen.getByPlaceholderText("Country")).toHaveValue("Country");
       expect(screen.getByLabelText("Description")).toHaveValue(
-        "Test Description"
+        "Event Description"
       );
       expect(screen.getByLabelText("Start Date")).toHaveValue("2022-01-01");
       expect(screen.getByLabelText("End Date")).toHaveValue("2022-01-02");
-      expect(screen.getByLabelText("Category")).toHaveValue("Test Category");
+      expect(screen.getByLabelText("Category")).toHaveValue("Event Category");
       expect(screen.getByLabelText("Organizer Info")).toHaveValue(
-        "Test Organizer"
+        "Organizer Info"
       );
-      expect(screen.getByLabelText("Type")).toHaveValue("Test Type");
-      expect(screen.getByLabelText("Status")).toHaveValue("Test Status");
+      expect(screen.getByLabelText("Type")).toHaveValue("Event Type");
+      expect(screen.getByLabelText("Status")).toHaveValue("Event Status");
     });
   });
 
-  test("Testing Edit Page fetching and displaying event data", async () => {
-    axios.put.mockResolvedValue({ data: { message: "handle submit" } });
+  test("Testing Edit Page fetches data if user is unautheticated", async () => {
+    const login = true;
+
+    axios.get.mockRejectedValue({ response: { status: 403 } });
+    render(
+      <UserAuth.Provider value={{ login }}>
+        <BrowserRouter>
+          <Edit />
+        </BrowserRouter>
+      </UserAuth.Provider>
+    );
+    await waitFor(() => {
+      expect(window.location.pathname).toBe("/");
+    });
+  });
+
+  test("Testing Edit Page fetches data if error occurs", async () => {
+    const login = true;
+
+    axios.get.mockRejectedValue({ response: { status: 500 } });
+    render(
+      <UserAuth.Provider value={{ login }}>
+        <BrowserRouter>
+          <Edit />
+        </BrowserRouter>
+      </UserAuth.Provider>
+    );
+    await waitFor(() => {
+      expect(window.location.pathname).toBe("/");
+    });
+  });
+
+  test("Submitting updated event data and if successful", async () => {
+    const mockData = {
+      _id: "123",
+      name: "Event Name",
+      address: {
+        street: "Street",
+        city: "City",
+        state: "State",
+        postalCode: "Postal Code",
+        country: "Country",
+      },
+      description: "Event Description",
+      startDate: "2022-01-01",
+      endDate: "2022-01-02",
+      category: "Event Category",
+      organizerInfo: "Organizer Info",
+      type: "Event Type",
+      status: "Event Status",
+    };
+    axios.get.mockResolvedValue({ data: { data: [mockData] } });
+
+    const mockResponse = {
+      data: {
+        success: true,
+      },
+    };
+    axios.put.mockResolvedValue({ data: { mockResponse } });
     const login = true;
     render(
       <UserAuth.Provider value={{ login }}>
@@ -80,13 +155,39 @@ describe("Testing Edit Page", () => {
         </BrowserRouter>
       </UserAuth.Provider>
     );
+    await waitFor(() => {
+      expect(screen.getByLabelText("Event Name")).toHaveValue("Event Name");
+    });
+    const sbtn = screen.getByText("Save");
+    fireEvent.click(sbtn);
 
-    const subtButton = screen.getByText("Update");
-    fireEvent.click(subtButton);
+    await waitFor(() => {
+      expect(alertMock).toHaveBeenCalledWith("record updated successfully");
+    });
   });
 
-  test("if any error occurs in saving data", async () => {
-    axios.put.mockRejectedValue(new Error("Error Occured"));
+  test("Submitting updated event data and if user is unauthenticated", async () => {
+    const mockData = {
+      _id: "123",
+      name: "Event Name",
+      address: {
+        street: "Street",
+        city: "City",
+        state: "State",
+        postalCode: "Postal Code",
+        country: "Country",
+      },
+      description: "Event Description",
+      startDate: "2022-01-01",
+      endDate: "2022-01-02",
+      category: "Event Category",
+      organizerInfo: "Organizer Info",
+      type: "Event Type",
+      status: "Event Status",
+    };
+    axios.get.mockResolvedValue({ data: { data: [mockData] } });
+
+    axios.put.mockRejectedValue({ response: { status: 403 } });
     const login = true;
     render(
       <UserAuth.Provider value={{ login }}>
@@ -95,13 +196,45 @@ describe("Testing Edit Page", () => {
         </BrowserRouter>
       </UserAuth.Provider>
     );
+    await waitFor(() => {
+      expect(screen.getByLabelText("Event Name")).toHaveValue("Event Name");
+    });
+    const sbtn = screen.getByText("Save");
+    fireEvent.click(sbtn);
 
-    const subtButton = screen.getByText("Update");
-    fireEvent.click(subtButton);
+    await waitFor(() => {
+      expect(alertMock).toHaveBeenCalledWith("Error Occured");
+    });
   });
 
-  test("Testing Edit Page is unauthenticated", async () => {
-    const login = false;
+  test("Submitting updated event data and if error occurs", async () => {
+    const mockData = {
+      _id: "123",
+      name: "Event Name",
+      address: {
+        street: "Street",
+        city: "City",
+        state: "State",
+        postalCode: "Postal Code",
+        country: "Country",
+      },
+      description: "Event Description",
+      startDate: "2022-01-01",
+      endDate: "2022-01-02",
+      category: "Event Category",
+      organizerInfo: "Organizer Info",
+      type: "Event Type",
+      status: "Event Status",
+    };
+    axios.get.mockResolvedValue({ data: { data: [mockData] } });
+
+    const mockResponse = {
+      data: {
+        success: true,
+      },
+    };
+    axios.put.mockRejectedValue({ response: { status: 500 } });
+    const login = true;
     render(
       <UserAuth.Provider value={{ login }}>
         <BrowserRouter>
@@ -109,7 +242,10 @@ describe("Testing Edit Page", () => {
         </BrowserRouter>
       </UserAuth.Provider>
     );
-
-    expect(window.location.pathname).toBe("/");
+    await waitFor(() => {
+      expect(screen.getByLabelText("Event Name")).toHaveValue("Event Name");
+    });
+    const sbtn = screen.getByText("Save");
+    fireEvent.click(sbtn);
   });
 });

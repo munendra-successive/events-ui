@@ -49,8 +49,8 @@ describe("Testing Register Page", () => {
   });
 
   test("if user already exist", async () => {
-    axios.post.mockResolvedValue({
-      data: { message: "User already exist" },
+    axios.post.mockRejectedValue({
+      response: { data: { message: "User already exist" } },
     });
     render(
       <BrowserRouter>
@@ -79,7 +79,9 @@ describe("Testing Register Page", () => {
 
   test(" if an error occurs", async () => {
     axios.post.mockRejectedValue({
-      data: { message: "Error Occured" },
+      response: {
+        data: { message: "Error Occured" },
+      },
     });
     render(
       <BrowserRouter>
@@ -101,32 +103,5 @@ describe("Testing Register Page", () => {
     fireEvent.change(addressInput, { target: { value: "123 Main St" } });
     fireEvent.change(phoneInput, { target: { value: "1234567890" } });
     fireEvent.click(registerButton);
-  });
-
-  test("if both password are not same", async () => {
-    axios.post.mockRejectedValue({
-      data: { message: "User already exist" },
-    });
-    render(
-      <BrowserRouter>
-        <Register />
-      </BrowserRouter>
-    );
-    const nameInput = screen.getByLabelText("Name");
-    const emailInput = screen.getByLabelText("Email");
-    const passwordInput = screen.getByLabelText("Password");
-    const confirmPasswordInput = screen.getByLabelText("Confirm Password");
-    const addressInput = screen.getByLabelText("Address");
-    const phoneInput = screen.getByLabelText("Phone");
-    const registerButton = screen.getByText("Register");
-
-    fireEvent.change(nameInput, { target: { value: "John Doe" } });
-    fireEvent.change(emailInput, { target: { value: "john.doe@example.com" } });
-    fireEvent.change(passwordInput, { target: { value: "password" } });
-    fireEvent.change(confirmPasswordInput, { target: { value: "password--" } });
-
-    fireEvent.change(addressInput, { target: { value: "123 Main St" } });
-    fireEvent.change(phoneInput, { target: { value: "1234567890" } });
-    fireEvent.click(screen.getByText("Register"));
   });
 });

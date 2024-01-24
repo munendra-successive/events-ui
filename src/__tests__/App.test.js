@@ -31,6 +31,5 @@ describe("App component", () => {
     // fireEvent.change(emailInput, { target: { value: "monu@gmail.com" } });
     // fireEvent.change(passInput, { target: { value: "Monu@123" } });
     // fireEvent.click(loginButton)
-    // expect(screen.getByText("Description")).toBeInTheDocument()
   });
 });

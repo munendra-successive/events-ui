@@ -4,12 +4,10 @@ import { Table, Button, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import { setHeader } from "./setHeader";
 import Sidebar from "./Sidebar";
-import { UserAuth } from "../user";
 
 const BulkList = () => {
   const [data, setData] = useState([]);
   const navigate = useNavigate();
-  const { login } = useContext(UserAuth);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -77,14 +75,10 @@ const BulkList = () => {
 
   return (
     <Sidebar>
-      {login ? (
-        <>
-          <h2>BulkList</h2>
-          <Table dataSource={data} columns={columns} />
-        </>
-      ) : (
-        navigate("/")
-      )}
+      <>
+        <h2>BulkList</h2>
+        <Table dataSource={data} columns={columns} />
+      </>
     </Sidebar>
   );
 };

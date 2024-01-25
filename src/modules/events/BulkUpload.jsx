@@ -2,7 +2,6 @@ import React, { useContext, useState } from "react";
 import axios from "axios";
 import { setHeader } from "./setHeader";
 import { InboxOutlined } from "@ant-design/icons";
-import { UserAuth } from "../user/UserAuthContext";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import { Button, Upload, Spin, Flex, message } from "antd";
@@ -10,7 +9,6 @@ const { Dragger } = Upload;
 
 const BulkUplaod = () => {
   const navigate = useNavigate();
-  const { login } = useContext(UserAuth);
   const [file, setFile] = useState(null);
   const [fileName, setFileName] = useState("");
   const [loading, setLoading] = useState(false);
@@ -68,53 +66,48 @@ const BulkUplaod = () => {
 
   return (
     <Sidebar>
-      {login ? (
-        <div>
-          <h2>CSV File Uploader</h2>
-          {loading && (
-            <div style={{ marginLeft: "40%", marginBottom: "100px" }}>
-              <Flex gap="large">
-                <Spin size="large">
-                  <div className="content" />
-                </Spin>
-              </Flex>
-            </div>
-          )}
-          <Dragger
-            accept=".csv"
-            onChange={handleFileChange}
-            data-testid="choose-file"
-          >
-            <p className="ant-upload-drag-icon">
-              <InboxOutlined />
-            </p>
-            <p className="ant-upload-text">
-              Click or drag file to this area to upload, it only accepts csv
-              file
-            </p>
-          </Dragger>
-          <div
-            style={{
-              marginLeft: "40%",
-              marginTop: "20px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          ></div>
-          <Button
-            data-testid="upload-button"
-            type="primary"
-            style={{ marginLeft: "40%" }}
-            onClick={handleUpload}
-            disabled={!file}
-          >
-            Upload Csv
-          </Button>
-        </div>
-      ) : (
-        navigate("/")
-      )}
+      <div>
+        <h2>CSV File Uploader</h2>
+        {loading && (
+          <div style={{ marginLeft: "40%", marginBottom: "100px" }}>
+            <Flex gap="large">
+              <Spin size="large">
+                <div className="content" />
+              </Spin>
+            </Flex>
+          </div>
+        )}
+        <Dragger
+          accept=".csv"
+          onChange={handleFileChange}
+          data-testid="choose-file"
+        >
+          <p className="ant-upload-drag-icon">
+            <InboxOutlined />
+          </p>
+          <p className="ant-upload-text">
+            Click or drag file to this area to upload, it only accepts csv file
+          </p>
+        </Dragger>
+        <div
+          style={{
+            marginLeft: "40%",
+            marginTop: "20px",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        ></div>
+        <Button
+          data-testid="upload-button"
+          type="primary"
+          style={{ marginLeft: "40%" }}
+          onClick={handleUpload}
+          disabled={!file}
+        >
+          Upload Csv
+        </Button>
+      </div>
     </Sidebar>
   );
 };

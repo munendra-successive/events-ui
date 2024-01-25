@@ -2,10 +2,8 @@ import React, { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Layout, Menu } from "antd";
 import PropTypes from "prop-types";
-import { UserAuth } from "../index";
 
 const Sidebar = ({ children }) => {
-  const { setLogin } = useContext(UserAuth);
   const navigate = useNavigate();
   const { Sider, Content } = Layout;
   return (
@@ -31,7 +29,6 @@ const Sidebar = ({ children }) => {
               <Link
                 to="/"
                 onClick={() => {
-                  setLogin(false);
                   localStorage.removeItem("authorization");
                   navigate("/");
                 }}

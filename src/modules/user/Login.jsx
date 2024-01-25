@@ -1,14 +1,19 @@
-import React, { useContext } from "react";
+import React, { useEffect } from "react";
 import { Form, Input, Button, message } from "antd";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { UserAuth } from "./UserAuthContext";
 
 const Login = () => {
-  const { setLogin } = useContext(UserAuth);
-
   const navigate = useNavigate();
+  const isLoggedOut = () => {
+    return localStorage.getItem("authorization") === null;
+  };
 
+  useEffect(() => {
+    if (!isLoggedOut()) {
+      navigate(-1);
+    }
+  });
   const handleLogin = async (values) => {
     try {
       const response = await axios.post(
@@ -28,7 +33,6 @@ const Login = () => {
           duration: 2,
         });
         localStorage.setItem("authorization", response.data.tokenIs);
-        setLogin(true);
         navigate("/list");
       }
     } catch (error) {

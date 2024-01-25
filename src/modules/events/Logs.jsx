@@ -1,7 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import axios from "axios";
 import { Table, message } from "antd";
-import { UserAuth } from "../user/UserAuthContext";
 import { useNavigate, useParams } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import { setHeader } from "./setHeader";
@@ -19,7 +18,6 @@ const Logs = () => {
       key: "errorMessage",
     },
   ];
-  const { login } = useContext(UserAuth);
   const navigate = useNavigate();
   const [data, setData] = useState([]);
   const [pagination, setPagination] = useState({
@@ -59,19 +57,15 @@ const Logs = () => {
 
   return (
     <Sidebar>
-      {login ? (
-        <div>
-          <h2>Error Details</h2>
-          <Table
-            columns={columns}
-            dataSource={data}
-            pagination={pagination}
-            onChange={(pagin) => setPagination(pagin)}
-          />
-        </div>
-      ) : (
-        navigate("/")
-      )}
+      <div>
+        <h2>Error Details</h2>
+        <Table
+          columns={columns}
+          dataSource={data}
+          pagination={pagination}
+          onChange={(pagin) => setPagination(pagin)}
+        />
+      </div>
     </Sidebar>
   );
 };

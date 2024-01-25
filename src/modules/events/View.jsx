@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from "react";
 import { Table, message } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import { UserAuth } from "..";
 import Sidebar from "./Sidebar";
 import { setHeader } from "./setHeader";
 const columns = [
@@ -62,7 +61,6 @@ const columns = [
 ];
 
 const View = () => {
-  const { login } = useContext(UserAuth);
   const navigate = useNavigate();
   const [data, setData] = useState([]);
   const { id } = useParams();
@@ -93,7 +91,7 @@ const View = () => {
 
   return (
     <Sidebar>
-      {login ? <Table dataSource={data} columns={columns} /> : navigate("/")}
+      <Table dataSource={data} columns={columns} />
     </Sidebar>
   );
 };

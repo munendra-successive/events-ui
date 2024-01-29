@@ -1,8 +1,7 @@
-import { BulkUplaod } from "../components";
+import { BulkUplaod } from "../modules";
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
-import { UserAuth } from "../components";
 import axios from "axios";
 Object.defineProperty(window, "matchMedia", {
   writable: true,
@@ -37,11 +36,9 @@ describe("Testing BulkUpload Page", () => {
     const login = true;
 
     render(
-      <UserAuth.Provider value={{ login }}>
         <BrowserRouter>
           <BulkUplaod />
         </BrowserRouter>
-      </UserAuth.Provider>
     );
 
     const fileInput = screen.getByTestId("choose-file");
@@ -63,11 +60,9 @@ describe("Testing BulkUpload Page", () => {
     const login = true;
 
     render(
-      <UserAuth.Provider value={{ login }}>
         <BrowserRouter>
           <BulkUplaod />
         </BrowserRouter>
-      </UserAuth.Provider>
     );
 
     const fileInput = screen.getByTestId("choose-file");

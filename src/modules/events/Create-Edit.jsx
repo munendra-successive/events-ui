@@ -1,11 +1,11 @@
-import React, { useContext, useEffect } from "react";
-import { Form, Input, Button, DatePicker, message } from "antd";
+import React, { useEffect } from "react";
+import { Form, Input, DatePicker } from "antd";
+import { Button } from "../../components";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
 import Sidebar from "./Sidebar";
 import { edit } from "../../utils/rules";
-import moment from "moment";
-import { setHeader } from "./setHeader";
+import { fetchEditData, setFormFields, EditData, createData } from "./service";
+import { errorMessage } from "../../utils/showMessage";
 const { TextArea } = Input;
 
 const Edit = () => {
@@ -14,37 +14,12 @@ const Edit = () => {
   const { id } = useParams();
   const fetchData = async () => {
     try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_SERVER_URL}/events/getById/${id}`,
-        {
-          headers: setHeader.json,
-        }
-      );
+      const response = await fetchEditData(id);
       const eventData = response.data["data"];
-      form.setFieldsValue({
-        name: eventData[0].name,
-        address: {
-          street: eventData[0].address.street,
-          city: eventData[0].address.city,
-          state: eventData[0].address.state,
-          postalCode: eventData[0].address.postalCode,
-          country: eventData[0].address.country,
-        },
-        description: eventData[0].description,
-        startDate: moment(eventData[0].startDate),
-        endDate: moment(eventData[0].endDate),
-        category: eventData[0].category,
-        organizerInfo: eventData[0].organizerInfo,
-        type: eventData[0].type,
-        status: eventData[0].status,
-      });
+      form.setFieldsValue(setFormFields(eventData));
     } catch (error) {
       if (error.response.status === 403) {
-        message.error({
-          type: "error",
-          content: "You are Unauthorized, Please Login",
-          duration: 2,
-        });
+        errorMessage("You are Unauthorized, Please Login");
         navigate("/");
       } else console.error("Error fetching data: ", error);
     }
@@ -57,13 +32,7 @@ const Edit = () => {
 
   const Edit = async (values) => {
     try {
-      await axios.put(
-        `${process.env.REACT_APP_SERVER_URL}/events/updateById/${id}`,
-        values,
-        {
-          headers: setHeader.json,
-        }
-      );
+      await EditData(values, id);
       alert("record updated successfully");
       form.resetFields();
     } catch (error) {
@@ -75,13 +44,7 @@ const Edit = () => {
 
   const create = async (values) => {
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_SERVER_URL}/events/create`,
-        values,
-        {
-          headers: setHeader.json,
-        }
-      );
+      await createData(values);
       form.resetFields();
       alert("record added successfully");
     } catch (error) {
@@ -107,7 +70,7 @@ const Edit = () => {
         wrapperCol={{ span: 14 }}
       >
         <Form.Item label="Event Name" name="name" rules={edit.eventName}>
-          <Input />
+          <Input placeholder="Event Name" />
         </Form.Item>
 
         <Form.Item label="Address">
@@ -175,9 +138,7 @@ const Edit = () => {
         </Form.Item>
 
         <Form.Item wrapperCol={{ offset: 4, span: 14 }}>
-          <Button type="primary" htmlType="submit">
-            Save
-          </Button>
+          <Button type="primary" htmlType="submit" name="Save" />
         </Form.Item>
       </Form>
     </Sidebar>

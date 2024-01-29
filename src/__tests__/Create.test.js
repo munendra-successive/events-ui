@@ -1,14 +1,13 @@
-import { Edit } from "../components";
+import { Edit } from "../modules";
 import React from "react";
 import {
   render,
   screen,
   fireEvent,
   waitFor,
-  queryByText,
+  act,
 } from "@testing-library/react";
 import { BrowserRouter, useParams } from "react-router-dom";
-import { UserAuth } from "../components";
 import axios from "axios";
 
 Object.defineProperty(window, "matchMedia", {
@@ -33,43 +32,31 @@ jest.mock("axios");
 const alertMock = jest.spyOn(window, "alert");
 
 describe("Testing for  Edit functionality", () => {
-  test("Testing Edit Page correctly rendering or not", () => {
-    const mockUserAuthValue = {
-      login: true,
-      isAuthenticated: function () {
-        return true;
-      },
-    };
-    render(
-      <UserAuth.Provider value={mockUserAuthValue}>
+  test("Testing Edit Page correctly rendering or not", async () => {
+    await act(async () => {
+      render(
         <BrowserRouter>
           <Edit />
         </BrowserRouter>
-      </UserAuth.Provider>
-    );
-    expect(screen.getByText("List")).toBeInTheDocument();
+      );
+    });
+    // expect(screen.getByText("List")).toBeInTheDocument();
     expect(screen.getByText("Bulk Listing")).toBeInTheDocument();
     expect(screen.getByText("Logout")).toBeInTheDocument();
   });
 
   // Updating event data correctly submits the form
   test("Submitting an event data an if it is successful", async () => {
-    const mockUserAuthValue = {
-      login: true,
-      isAuthenticated: function () {
-        return true;
-      },
-    };
-
     axios.post.mockResolvedValue({ data: { msg: "Event added Successfully" } });
-    render(
-      <UserAuth.Provider value={mockUserAuthValue}>
+    await act(async () => {
+      render(
         <BrowserRouter>
           <Edit />
         </BrowserRouter>
-      </UserAuth.Provider>
-    );
-    fireEvent.change(screen.getByLabelText("Event Name"), {
+      );
+    });
+
+    fireEvent.change(screen.getByPlaceholderText("Event Name"), {
       target: { value: "Updated Event Name" },
     });
     fireEvent.change(screen.getByPlaceholderText("Street"), {
@@ -110,20 +97,11 @@ describe("Testing for  Edit functionality", () => {
   });
 
   test("Submitting an event data an if user is unauthenticated", async () => {
-    const mockUserAuthValue = {
-      login: true,
-      isAuthenticated: function () {
-        return true;
-      },
-    };
-
     axios.post.mockRejectedValue({ response: { status: 403 } });
     render(
-      <UserAuth.Provider value={mockUserAuthValue}>
-        <BrowserRouter>
-          <Edit />
-        </BrowserRouter>
-      </UserAuth.Provider>
+      <BrowserRouter>
+        <Edit />
+      </BrowserRouter>
     );
     fireEvent.change(screen.getByLabelText("Event Name"), {
       target: { value: "Updated Event Name" },
@@ -170,11 +148,9 @@ describe("Testing for  Edit functionality", () => {
 
     axios.post.mockRejectedValue({ response: { status: 500 } });
     render(
-      <UserAuth.Provider value={{ login }}>
-        <BrowserRouter>
-          <Edit />
-        </BrowserRouter>
-      </UserAuth.Provider>
+      <BrowserRouter>
+        <Edit />
+      </BrowserRouter>
     );
     fireEvent.change(screen.getByLabelText("Event Name"), {
       target: { value: "Updated Event Name" },

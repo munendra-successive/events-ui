@@ -1,10 +1,8 @@
 import React, { useEffect } from "react";
-import { Select, Button, Table, Modal } from "antd";
 import { useNavigate } from "react-router-dom";
-
+import { Table, Modal, Select, SearchBar, Button } from "../../../components";
 import useList from "./useList";
 import Sidebar from "../Sidebar";
-const { Option } = Select;
 
 const List = () => {
   const navigate = useNavigate();
@@ -34,8 +32,6 @@ const List = () => {
       <div>
         <div style={{ display: "flex", margin: "10px" }}>
           <Select
-            style={{ width: 200, marginRight: "16px" }}
-            placeholder="Select an Type"
             onChange={(value) => {
               setQuery(value);
               setPagination({
@@ -44,17 +40,8 @@ const List = () => {
                 total: 0,
               });
             }}
-          >
-            <Option value="GameFilter">Game</Option>
-            <Option value="PerformanceFilter">Performance</Option>
-            <Option value="ShowFilter">Show</Option>
-            <Option value="ClassFilter">Class</Option>
-            <Option value="TalkFilter">Talk</Option>
-            <Option value="ConcertFilter">Concert</Option>
-          </Select>
-          <input
-            type="text"
-            placeholder="Search"
+          />
+          <SearchBar
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={(e) => {
@@ -67,12 +54,6 @@ const List = () => {
                 });
               }
             }}
-            style={{
-              marginRight: "16px",
-              padding: "4px",
-              borderRadius: "8px",
-              borderBlockColor: "lightgray",
-            }}
           />
 
           <div
@@ -84,33 +65,32 @@ const List = () => {
               marginRight: "10%",
             }}
           >
-            <Button type="link" onClick={() => navigate("/edit/create")}>
-              Create
-            </Button>
-            <Button type="link" onClick={() => navigate("/bulkUpload")}>
-              Upload Csv
-            </Button>
+            <Button
+              type="link"
+              onClick={() => navigate("/edit/create")}
+              name="Create"
+            />
+            <Button
+              type="link"
+              onClick={() => navigate("/bulkUpload")}
+              name="Upload Csv"
+            />
           </div>
         </div>
-        <div style={{ minHeight: "calc(100vh - 96px)" }}>
-          <Table
-            data-testid="table"
-            dataSource={data}
-            columns={columns}
-            pagination={pagination}
-            onChange={(pagin) => setPagination(pagin)}
-          />
-        </div>
-
+        <Table
+          columns={columns}
+          dataSource={data}
+          pagination={pagination}
+          setPagination={setPagination}
+          onChange={(pagin) => setPagination(pagin)}
+        />
         <Modal
           data-testid="confirm-delete"
           title="Confirm Delete"
           open={isModalOpen}
           onOk={handleOk}
           onCancel={() => setIsModalOpen(false)}
-        >
-          <p>Do you want to Delete</p>
-        </Modal>
+        />
       </div>
     </Sidebar>
   );

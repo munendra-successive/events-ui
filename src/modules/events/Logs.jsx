@@ -1,9 +1,9 @@
-import React, { useContext, useState, useEffect } from "react";
-import axios from "axios";
-import { Table, message } from "antd";
+import React, { useState, useEffect } from "react";
+import { Table } from "../../components";
 import { useNavigate, useParams } from "react-router-dom";
 import Sidebar from "./Sidebar";
-import { setHeader } from "./setHeader";
+import { fetchLogData } from "./service";
+import { errorMessage } from "../../utils/showMessage";
 const Logs = () => {
   const columns = [
     {
@@ -29,12 +29,10 @@ const Logs = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_SERVER_URL}/events/getByUploadId/${uploadId}/?current=${pagination.current}&pageSize=${pagination.pageSize}`,
-
-          {
-            headers: setHeader.json,
-          }
+        const response = await fetchLogData(
+          uploadId,
+          pagination.current,
+          pagination.pageSize
         );
         setData(response.data.data);
         setPagination({
@@ -42,12 +40,8 @@ const Logs = () => {
           total: response.data.datalength,
         });
       } catch (error) {
-        if (error.response.status == 403) {
-          message.error({
-            type: "error",
-            content: "You are Unauthorized, Please Login",
-            duration: 2,
-          });
+        if (error.response.status === 403) {
+          errorMessage("You are Unauthorized, Please Login");
           navigate("/");
         } else console.error("Error fetching data: ", error);
       }

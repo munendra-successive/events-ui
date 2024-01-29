@@ -1,8 +1,7 @@
-import Sidebar from "../components/Sidebar";
+import Sidebar from "../modules/events/Sidebar";
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
-import { UserAuth } from "../components";
 Object.defineProperty(window, "matchMedia", {
   writable: true,
   value: (query) => ({
@@ -19,13 +18,10 @@ Object.defineProperty(window, "matchMedia", {
 
 describe("Testing Sidebar", () => {
   test("Testing Sidebar Page correctly rendering or not", () => {
-    const setLogin = jest.fn();
     render(
-      <UserAuth.Provider value={{ setLogin }}>
-        <BrowserRouter>
-          <Sidebar />
-        </BrowserRouter>
-      </UserAuth.Provider>
+      <BrowserRouter>
+        <Sidebar />
+      </BrowserRouter>
     );
     const listButton = screen.getByText("List");
     fireEvent.click(listButton);

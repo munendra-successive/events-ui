@@ -1,8 +1,7 @@
-import { BulkList } from "../components";
+import { BulkList } from "../modules";
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
-import { UserAuth } from "../components";
 import axios from "axios";
 Object.defineProperty(window, "matchMedia", {
   writable: true,
@@ -22,12 +21,6 @@ jest.mock("axios");
 const setLogin = jest.fn();
 
 describe("Testing BulkList Page", () => {
-  const mockUserAuthValue = {
-    login: true,
-    isAuthenticated: function () {
-      return true;
-    },
-  };
   test("Testing BulkList Page correctly rendering or not", async () => {
     const mockData = [
       {
@@ -40,11 +33,9 @@ describe("Testing BulkList Page", () => {
     ];
     axios.get.mockResolvedValue({ data: { data: mockData } });
     render(
-      <UserAuth.Provider value={mockUserAuthValue}>
-        <BrowserRouter>
-          <BulkList />
-        </BrowserRouter>
-      </UserAuth.Provider>
+      <BrowserRouter>
+        <BulkList />
+      </BrowserRouter>
     );
     await waitFor(() => {
       expect(screen.getByText("file1.csv")).toBeInTheDocument();
@@ -57,11 +48,9 @@ describe("Testing BulkList Page", () => {
   test("Testing  fetching data if user is unauthorized", async () => {
     axios.get.mockRejectedValue({ response: { status: 403 } });
     render(
-      <UserAuth.Provider value={{ setLogin }}>
         <BrowserRouter>
           <BulkList />
         </BrowserRouter>
-      </UserAuth.Provider>
     );
 
     await waitFor(() => {
@@ -72,11 +61,9 @@ describe("Testing BulkList Page", () => {
   test("Testing  fetching data if error occurs", async () => {
     axios.get.mockRejectedValue({ response: { status: 500 } });
     render(
-      <UserAuth.Provider value={{ setLogin }}>
         <BrowserRouter>
           <BulkList />
         </BrowserRouter>
-      </UserAuth.Provider>
     );
   });
 });

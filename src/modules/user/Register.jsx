@@ -1,6 +1,9 @@
-import { Form, Input, Button, message } from "antd";
+import { Form, Input } from "antd";
+import { Button } from "../../components";
 import axios from "axios";
 import { register } from "../../utils/rules";
+import config from "../../config";
+import { errorMessage, successMessage } from "../../utils/showMessage";
 
 const Register = () => {
   const [form] = Form.useForm();
@@ -8,7 +11,7 @@ const Register = () => {
     try {
       const { confirmPassword, ...otherValues } = values;
       const response = await axios.post(
-        `${process.env.REACT_APP_SERVER_URL}/users/register`,
+        `${config.user_url}/register`,
         otherValues,
         {
           headers: {
@@ -17,22 +20,13 @@ const Register = () => {
         }
       );
 
-      console.log("Response is: ", response);
       form.resetFields();
       if (response.data.message === "Registered Successfully") {
-        message.success({
-          type: "success",
-          content: response.data.message,
-          duration: 2,
-        });
+        successMessage(response.data.message);
       }
     } catch (error) {
       if (error.response.data.message === "User already exist") {
-        message.error({
-          type: "error",
-          content: "User already exist",
-          duration: 2,
-        });
+        errorMessage("User already exist");
       } else console.error("Response  is:", error);
     }
   };
@@ -78,9 +72,7 @@ const Register = () => {
         </Form.Item>
 
         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-          <Button type="primary" htmlType="submit">
-            Register
-          </Button>
+          <Button type="primary" htmlType="submit" name="Register" />
         </Form.Item>
       </Form>
     </div>

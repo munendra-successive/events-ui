@@ -1,8 +1,7 @@
-import { View } from "../components";
+import View from "../modules/events/View";
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { UserAuth } from "../components";
 import axios from "axios";
 Object.defineProperty(window, "matchMedia", {
   writable: true,
@@ -40,13 +39,10 @@ describe("Testing View  Page", () => {
     };
 
     axios.get.mockResolvedValue({ data: { data: [mockData] } });
-    const login = true;
     render(
-      <UserAuth.Provider value={{ login }}>
-        <BrowserRouter>
-          <View />
-        </BrowserRouter>
-      </UserAuth.Provider>
+      <BrowserRouter>
+        <View />
+      </BrowserRouter>
     );
     await waitFor(() => {
       expect(screen.getByText("Tickets on sale")).toBeInTheDocument();
@@ -59,13 +55,10 @@ describe("Testing View  Page", () => {
   });
   test("Testing if user is not authenticated", async () => {
     axios.get.mockRejectedValue({ response: { status: 403 } });
-    const login = true;
     render(
-      <UserAuth.Provider value={{ login }}>
-        <BrowserRouter>
-          <View />
-        </BrowserRouter>
-      </UserAuth.Provider>
+      <BrowserRouter>
+        <View />
+      </BrowserRouter>
     );
     await waitFor(() => {
       expect(
@@ -77,13 +70,10 @@ describe("Testing View  Page", () => {
 
   test("Testing if an error occurs", async () => {
     axios.get.mockRejectedValue({ response: { status: 500 } });
-    const login = true;
     render(
-      <UserAuth.Provider value={{ login }}>
-        <BrowserRouter>
-          <View />
-        </BrowserRouter>
-      </UserAuth.Provider>
+      <BrowserRouter>
+        <View />
+      </BrowserRouter>
     );
     await waitFor(() => {
       expect(screen.queryByText("Tickets on sale")).toBe(null);

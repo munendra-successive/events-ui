@@ -1,4 +1,4 @@
-import { NotFound } from "../components";
+import NotFound from "../utils/NotFound";
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
@@ -24,9 +24,8 @@ describe("Testing Not Found", () => {
     </BrowserRouter>
   );
   test("check if not found renders or not", () => {
-    expect(screen.getByText("404 - Not Found")).toBeInTheDocument();
     expect(
-      screen.getByText("Sorry,the page you are looking for does not exist.")
+      screen.getByText("Sorry, the page you visited does not exist.")
     ).toBeInTheDocument();
   });
 });

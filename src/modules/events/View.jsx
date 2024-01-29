@@ -1,9 +1,9 @@
-import React, { useContext, useEffect, useState } from "react";
-import { Table, message } from "antd";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
 import Sidebar from "./Sidebar";
-import { setHeader } from "./setHeader";
+import { Table } from "../../components";
+import { fetchEditData } from "./service";
+import { errorMessage } from "../../utils/showMessage";
 const columns = [
   {
     title: "Event Name",
@@ -67,20 +67,11 @@ const View = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_SERVER_URL}/events/getById/${id}`,
-          {
-            headers: setHeader.json,
-          }
-        );
+        const response = await fetchEditData(id);
         setData(response.data["data"]);
       } catch (error) {
         if (error.response.status === 403) {
-          message.error({
-            type: "error",
-            content: "You are Unauthorized, Please Login",
-            duration: 2,
-          });
+          errorMessage("You are Unauthorized, Please Login");
           navigate("/");
         } else console.error("Error fetching data:", error);
       }
@@ -91,7 +82,7 @@ const View = () => {
 
   return (
     <Sidebar>
-      <Table dataSource={data} columns={columns} />
+      <Table columns={columns} dataSource={data} />
     </Sidebar>
   );
 };

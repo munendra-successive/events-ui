@@ -1,35 +1,39 @@
-import React from "react";
-import App from "../App";
-import { render, screen, fireEvent } from "@testing-library/react";
+import React, { lazy, Suspense } from "react";
+import { Skeleton } from "antd";
+import { render, screen } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
+import { act } from "react-dom/test-utils";
+const App = lazy(() => import("../App"));
 Object.defineProperty(window, "matchMedia", {
   writable: true,
   value: (query) => ({
     matches: false,
     media: query,
     onchange: null,
-    addListener: () => { },
-    removeListener: () => { },
-    addEventListener: () => { },
-    removeEventListener: () => { },
-    dispatchEvent: () => { },
+    addListener: () => {},
+    removeListener: () => {},
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    dispatchEvent: () => {},
   }),
 });
 describe("App component", () => {
-  test("renders without crashing", () => {
-    render(
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    );
+  test("renders without crashing", async () => {
+    await act(async () => {
+      render(
+        <Suspense fallback={<Skeleton />}>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </Suspense>
+      );
+    });
+
     const loginButton = screen.getByText("Log In");
     expect(loginButton).toBeInTheDocument();
     const emailInput = screen.getByLabelText("Email");
     expect(emailInput).toBeInTheDocument();
     const passInput = screen.getByLabelText("Password");
     expect(passInput).toBeInTheDocument();
-    // fireEvent.change(emailInput, { target: { value: "monu@gmail.com" } });
-    // fireEvent.change(passInput, { target: { value: "Monu@123" } });
-    // fireEvent.click(loginButton)
   });
 });

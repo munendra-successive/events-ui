@@ -1,14 +1,7 @@
-import { Edit } from "../components";
+import Edit from "../modules/events/Create-Edit";
 import React from "react";
-import {
-  render,
-  screen,
-  fireEvent,
-  waitFor,
-  queryByText,
-} from "@testing-library/react";
-import { BrowserRouter, useParams } from "react-router-dom";
-import { UserAuth } from "../components";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { BrowserRouter } from "react-router-dom";
 import axios from "axios";
 
 Object.defineProperty(window, "matchMedia", {
@@ -33,7 +26,6 @@ jest.mock("axios");
 const alertMock = jest.spyOn(window, "alert");
 describe("Testing for  Edit functionality", () => {
   test("Testing Edit Page fetches data correctly", async () => {
-    const login = true;
     const mockResponse = {
       data: {
         data: [
@@ -59,11 +51,9 @@ describe("Testing for  Edit functionality", () => {
     };
     axios.get.mockResolvedValue(mockResponse);
     render(
-      <UserAuth.Provider value={{ login }}>
-        <BrowserRouter>
-          <Edit />
-        </BrowserRouter>
-      </UserAuth.Provider>
+      <BrowserRouter>
+        <Edit />
+      </BrowserRouter>
     );
     await waitFor(() => {
       expect(screen.getByLabelText("Event Name")).toHaveValue("Event Name");
@@ -89,15 +79,11 @@ describe("Testing for  Edit functionality", () => {
   });
 
   test("Testing Edit Page fetches data if user is unautheticated", async () => {
-    const login = true;
-
     axios.get.mockRejectedValue({ response: { status: 403 } });
     render(
-      <UserAuth.Provider value={{ login }}>
-        <BrowserRouter>
-          <Edit />
-        </BrowserRouter>
-      </UserAuth.Provider>
+      <BrowserRouter>
+        <Edit />
+      </BrowserRouter>
     );
     await waitFor(() => {
       expect(window.location.pathname).toBe("/");
@@ -105,15 +91,11 @@ describe("Testing for  Edit functionality", () => {
   });
 
   test("Testing Edit Page fetches data if error occurs", async () => {
-    const login = true;
-
     axios.get.mockRejectedValue({ response: { status: 500 } });
     render(
-      <UserAuth.Provider value={{ login }}>
-        <BrowserRouter>
-          <Edit />
-        </BrowserRouter>
-      </UserAuth.Provider>
+      <BrowserRouter>
+        <Edit />
+      </BrowserRouter>
     );
     await waitFor(() => {
       expect(window.location.pathname).toBe("/");
@@ -131,7 +113,7 @@ describe("Testing for  Edit functionality", () => {
         postalCode: "Postal Code",
         country: "Country",
       },
-      description: "Event Description",
+      description: "Event Description Description",
       startDate: "2022-01-01",
       endDate: "2022-01-02",
       category: "Event Category",
@@ -140,28 +122,32 @@ describe("Testing for  Edit functionality", () => {
       status: "Event Status",
     };
     axios.get.mockResolvedValue({ data: { data: [mockData] } });
-
     const mockResponse = {
       data: {
         success: true,
       },
     };
     axios.put.mockResolvedValue({ data: { mockResponse } });
-    const login = true;
     render(
-      <UserAuth.Provider value={{ login }}>
-        <BrowserRouter>
-          <Edit />
-        </BrowserRouter>
-      </UserAuth.Provider>
+      <BrowserRouter>
+        <Edit />
+      </BrowserRouter>
     );
     await waitFor(() => {
       expect(screen.getByLabelText("Event Name")).toHaveValue("Event Name");
+      expect(screen.getByPlaceholderText("Street")).toHaveValue("Street");
+      expect(screen.getByPlaceholderText("City")).toHaveValue("City");
+      expect(screen.getByPlaceholderText("State")).toHaveValue("State");
+      expect(screen.getByPlaceholderText("Postal Code")).toHaveValue(
+        "Postal Code"
+      );
+      expect(screen.getByPlaceholderText("Country")).toHaveValue("Country");
     });
-    const sbtn = screen.getByText("Save");
-    fireEvent.click(sbtn);
 
     await waitFor(() => {
+      const sbtn = screen.getByText("Save");
+      expect(sbtn).toBeInTheDocument();
+      fireEvent.click(sbtn);
       expect(alertMock).toHaveBeenCalledWith("record updated successfully");
     });
   });
@@ -177,7 +163,7 @@ describe("Testing for  Edit functionality", () => {
         postalCode: "Postal Code",
         country: "Country",
       },
-      description: "Event Description",
+      description: "Event Description Description",
       startDate: "2022-01-01",
       endDate: "2022-01-02",
       category: "Event Category",
@@ -186,15 +172,11 @@ describe("Testing for  Edit functionality", () => {
       status: "Event Status",
     };
     axios.get.mockResolvedValue({ data: { data: [mockData] } });
-
     axios.put.mockRejectedValue({ response: { status: 403 } });
-    const login = true;
     render(
-      <UserAuth.Provider value={{ login }}>
-        <BrowserRouter>
-          <Edit />
-        </BrowserRouter>
-      </UserAuth.Provider>
+      <BrowserRouter>
+        <Edit />
+      </BrowserRouter>
     );
     await waitFor(() => {
       expect(screen.getByLabelText("Event Name")).toHaveValue("Event Name");
@@ -218,7 +200,7 @@ describe("Testing for  Edit functionality", () => {
         postalCode: "Postal Code",
         country: "Country",
       },
-      description: "Event Description",
+      description: "Event Description Description",
       startDate: "2022-01-01",
       endDate: "2022-01-02",
       category: "Event Category",
@@ -234,13 +216,10 @@ describe("Testing for  Edit functionality", () => {
       },
     };
     axios.put.mockRejectedValue({ response: { status: 500 } });
-    const login = true;
     render(
-      <UserAuth.Provider value={{ login }}>
-        <BrowserRouter>
-          <Edit />
-        </BrowserRouter>
-      </UserAuth.Provider>
+      <BrowserRouter>
+        <Edit />
+      </BrowserRouter>
     );
     await waitFor(() => {
       expect(screen.getByLabelText("Event Name")).toHaveValue("Event Name");

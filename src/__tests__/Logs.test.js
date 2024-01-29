@@ -1,4 +1,4 @@
-import Logs from "../components/events/Logs";
+import Logs from "../modules/events/Logs";
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
@@ -21,7 +21,6 @@ Object.defineProperty(window, "matchMedia", {
 jest.mock("axios");
 describe("Testing Logs  Page", () => {
   test("Testing Logs Page rendering correctly", async () => {
-    const login = true;
     axios.get.mockResolvedValue({
       data: {
         data: [
@@ -33,11 +32,9 @@ describe("Testing Logs  Page", () => {
       },
     });
     render(
-      <UserAuth.Provider value={{ login }}>
         <BrowserRouter>
           <Logs />
         </BrowserRouter>
-      </UserAuth.Provider>
     );
     await waitFor(() => {
       expect(
@@ -47,18 +44,15 @@ describe("Testing Logs  Page", () => {
   });
 
   test("Testing Logs Page if user is authenticated", async () => {
-    const login = true;
     axios.get.mockRejectedValue({
       response: {
         status: 403,
       },
     });
     render(
-      <UserAuth.Provider value={{ login }}>
         <BrowserRouter>
           <Logs />
         </BrowserRouter>
-      </UserAuth.Provider>
     );
     await waitFor(() => {
       expect(
@@ -68,18 +62,15 @@ describe("Testing Logs  Page", () => {
   });
 
   test("Testing Logs Page if error occurs", async () => {
-    const login = true;
     axios.get.mockRejectedValue({
       response: {
         status: 500,
       },
     });
     render(
-      <UserAuth.Provider value={{ login }}>
         <BrowserRouter>
           <Logs />
         </BrowserRouter>
-      </UserAuth.Provider>
     );
   });
 });

@@ -1,14 +1,7 @@
-import { List } from "../components";
+import List from "../modules/events/List/List";
 import React from "react";
-import {
-  render,
-  screen,
-  fireEvent,
-  queryByText,
-  waitFor,
-} from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
-import { UserAuth } from "../components";
 Object.defineProperty(window, "matchMedia", {
   writable: true,
   value: (query) => ({
@@ -25,18 +18,10 @@ Object.defineProperty(window, "matchMedia", {
 
 describe("Testing List Page", () => {
   test("Testing List Page correctly rendering or not", () => {
-    const mockUserAuthValue = {
-      login: true,
-      isAuthenticated: function () {
-        return true;
-      },
-    };
     render(
-      <UserAuth.Provider value={mockUserAuthValue}>
-        <BrowserRouter>
-          <List />
-        </BrowserRouter>
-      </UserAuth.Provider>
+      <BrowserRouter>
+        <List />
+      </BrowserRouter>
     );
     expect(screen.getByText("List")).toBeInTheDocument();
     expect(screen.getByText("Bulk Listing")).toBeInTheDocument();
@@ -47,18 +32,10 @@ describe("Testing List Page", () => {
   });
 
   test("Testing  Buttons ", () => {
-    const mockUserAuthValue = {
-      login: true,
-      isAuthenticated: function () {
-        return true;
-      },
-    };
     render(
-      <UserAuth.Provider value={mockUserAuthValue}>
-        <BrowserRouter>
-          <List />
-        </BrowserRouter>
-      </UserAuth.Provider>
+      <BrowserRouter>
+        <List />
+      </BrowserRouter>
     );
     const createButtton = screen.getByText("Create");
     fireEvent.click(createButtton);
@@ -69,34 +46,21 @@ describe("Testing List Page", () => {
   });
 
   test("Testing  if list route is authenticated or not ", () => {
-    const mockUserAuthValue = {
-      login: false,
-      isAuthenticated: function () {
-        return true;
-      },
-    };
     render(
-      <UserAuth.Provider value={mockUserAuthValue}>
-        <BrowserRouter>
-          <List />
-        </BrowserRouter>
-      </UserAuth.Provider>
+      <BrowserRouter>
+        <List />
+      </BrowserRouter>
     );
   });
 
   test("Testing  Serach Bar", async () => {
-    const login = true;
     render(
-      <UserAuth.Provider value={{ login }}>
-        <BrowserRouter>
-          <List />
-        </BrowserRouter>
-      </UserAuth.Provider>
+      <BrowserRouter>
+        <List />
+      </BrowserRouter>
     );
     const searchBar = screen.getByPlaceholderText("Search");
     fireEvent.change(searchBar, { target: { value: "music" } });
     fireEvent.keyDown(searchBar, { key: "Enter", code: "Enter" });
   });
-
-  
 });

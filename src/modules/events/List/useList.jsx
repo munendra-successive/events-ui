@@ -1,13 +1,11 @@
 import { useState } from "react";
-import { Button, message } from "antd";
+import { Button } from "../../../components";
+import { successMessage, errorMessage } from "../../../utils/showMessage";
 import { useNavigate } from "react-router-dom";
-import { setHeader } from "../setHeader";
-import axios from "axios";
-import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
+import { deleteData, getData } from "../service";
 
 const useList = () => {
   const navigate = useNavigate();
-
   const columns = [
     {
       title: "Event Name",
@@ -46,31 +44,28 @@ const useList = () => {
       render: (record) => (
         <>
           <Button
-            data-testid="view-btn"
-            style={{ margin: "10px" }}
             type="link"
+            data-testid="view-btn"
             size="large"
             onClick={() => navigate(`/view/${record._id}`)}
-          >
-            <EyeOutlined />
-          </Button>
+            iconName="view"
+          />
           <Button
             type="link"
-            data-testid="edit-btn"
+            test_id="edit-btn"
             size="large"
             onClick={() => navigate(`/edit/${record._id}`)}
-          >
-            <EditOutlined />
-          </Button>
+            iconName="edit"
+          />
 
           <Button
             type="link"
             size="large"
-            data-testid="delete-btn"
+            test_id="delete-btn"
             onClick={() => handleActionDelete(record)}
-          >
-            <DeleteOutlined />
-          </Button>
+            danger="true"
+            iconName="delete"
+          />
         </>
       ),
     },
@@ -89,27 +84,13 @@ const useList = () => {
 
   const handleOk = async () => {
     try {
-      await axios.delete(
-        `${process.env.REACT_APP_SERVER_URL}/events/deleteById/${id}`,
-        {
-          headers: setHeader.json,
-        }
-      );
-
-      message.success({
-        type: "success",
-        content: "Deleted Successfully",
-        duration: 2,
-      });
+      await deleteData(id);
+      successMessage("Deleted Successfully");
       setIsRefresh(!isRefresh);
     } catch (error) {
       if (error.response?.status === 403) {
         navigate("/");
-        message.error({
-          type: "error",
-          content: "You are Unauthorized, Please Login",
-          duration: 2,
-        });
+        errorMessage("You are Unauthorized, Please Login");
       } else console.error("Error in deleteing data: ", error);
     } finally {
       setIsModalOpen(false);
@@ -123,17 +104,10 @@ const useList = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_SERVER_URL}/events/get`,
-        {
-          params: {
-            current: pagination.current,
-            pageSize: pagination.pageSize,
-            query: query,
-          },
-
-          headers: setHeader.json,
-        }
+      const response = await getData(
+        pagination.current,
+        pagination.pageSize,
+        query
       );
       setData(response.data["data"]);
       setPagination({
@@ -143,11 +117,7 @@ const useList = () => {
     } catch (error) {
       if (error.response.status === 403) {
         navigate("/");
-        message.error({
-          type: "error",
-          content: "You are Unauthorized, Please Login",
-          duration: 2,
-        });
+        errorMessage("You are Unauthorized, Please Login");
       } else console.error("Error fetching data: ", error);
     }
   };

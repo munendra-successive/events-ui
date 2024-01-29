@@ -1,9 +1,10 @@
 import "./App.css";
 import { Suspense } from "react";
+import { Skeleton } from "antd";
 import Router from "./utils/Router";
 function App() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<Skeleton />}>
       <Router />
     </Suspense>
   );

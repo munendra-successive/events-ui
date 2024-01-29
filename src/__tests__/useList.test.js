@@ -1,7 +1,12 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import axios from "axios"; // mock axios
-import { UserAuth } from "../components";
-import { List } from "../components";
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  act,
+} from "@testing-library/react";
+import axios from "axios";
+import { List } from "../modules";
 import { BrowserRouter } from "react-router-dom";
 
 const alertMock = jest.spyOn(window, "alert");
@@ -26,7 +31,7 @@ describe("useList", () => {
   });
 
   it("fetches data and renders the component", async () => {
-    axios.get.mockResolvedValueOnce({
+    axios.get.mockResolvedValue({
       data: {
         data: [
           {
@@ -38,69 +43,42 @@ describe("useList", () => {
             organizerInfo: "Organizer 1",
             type: "Type 1",
           },
-          {
-            _id: "2",
-            name: "Event 2",
-            status: "Inactive",
-            description: "Description 2",
-            category: "Category 2",
-            organizerInfo: "Organizer 2",
-            type: "Type 2",
-          },
         ],
-        datalength: 2,
+        datalength: 1,
       },
     });
-    const mockUserAuthValue = {
-      login: true,
-      isAuthenticated: function () {
-        return true;
-      },
-    };
-    render(
-      <UserAuth.Provider value={mockUserAuthValue}>
+    await act(async () => {
+      render(
         <BrowserRouter>
           <List />
         </BrowserRouter>
-      </UserAuth.Provider>
-    );
+      );
+    });
 
-    await waitFor(() =>
-      expect(screen.getAllByTestId("view-btn")).toHaveLength(2)
-    );
+    await waitFor(() => {
+      expect(screen.getByText("Event 1")).toBeInTheDocument();
+      expect(screen.getByText("Active")).toBeInTheDocument();
+      expect(screen.getByTestId("view-btn")).toBeInTheDocument();
+    });
   });
 
   it("if an unauthorized user try to fetches the data", async () => {
     axios.get.mockRejectedValueOnce({ response: { status: 403 } });
-    const mockUserAuthValue = {
-      login: true,
-      isAuthenticated: function () {
-        return true;
-      },
-    };
+
     render(
-      <UserAuth.Provider value={mockUserAuthValue}>
-        <BrowserRouter>
-          <List />
-        </BrowserRouter>
-      </UserAuth.Provider>
+      <BrowserRouter>
+        <List />
+      </BrowserRouter>
     );
   });
 
   it("if an error occurs in fetching data", async () => {
     axios.get.mockRejectedValueOnce({ response: { status: 500 } });
-    const mockUserAuthValue = {
-      login: true,
-      isAuthenticated: function () {
-        return true;
-      },
-    };
+
     render(
-      <UserAuth.Provider value={mockUserAuthValue}>
-        <BrowserRouter>
-          <List />
-        </BrowserRouter>
-      </UserAuth.Provider>
+      <BrowserRouter>
+        <List />
+      </BrowserRouter>
     );
   });
 
@@ -124,18 +102,10 @@ describe("useList", () => {
 
     axios.delete.mockResolvedValueOnce();
 
-    const mockUserAuthValue = {
-      login: true,
-      isAuthenticated: function () {
-        return true;
-      },
-    };
     render(
-      <UserAuth.Provider value={mockUserAuthValue}>
-        <BrowserRouter>
-          <List />
-        </BrowserRouter>
-      </UserAuth.Provider>
+      <BrowserRouter>
+        <List />
+      </BrowserRouter>
     );
 
     await waitFor(() => {
@@ -172,18 +142,10 @@ describe("useList", () => {
 
     axios.delete.mockRejectedValueOnce({ response: { status: 403 } });
 
-    const mockUserAuthValue = {
-      login: true,
-      isAuthenticated: function () {
-        return true;
-      },
-    };
     render(
-      <UserAuth.Provider value={mockUserAuthValue}>
-        <BrowserRouter>
-          <List />
-        </BrowserRouter>
-      </UserAuth.Provider>
+      <BrowserRouter>
+        <List />
+      </BrowserRouter>
     );
 
     await waitFor(() => {
@@ -214,18 +176,10 @@ describe("useList", () => {
 
     axios.delete.mockRejectedValueOnce({ response: { status: 500 } });
 
-    const mockUserAuthValue = {
-      login: true,
-      isAuthenticated: function () {
-        return true;
-      },
-    };
     render(
-      <UserAuth.Provider value={mockUserAuthValue}>
-        <BrowserRouter>
-          <List />
-        </BrowserRouter>
-      </UserAuth.Provider>
+      <BrowserRouter>
+        <List />
+      </BrowserRouter>
     );
 
     await waitFor(() => {

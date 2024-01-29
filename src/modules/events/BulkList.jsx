@@ -1,31 +1,21 @@
-import React, { useEffect, useState, useContext } from "react";
-import axios from "axios";
-import { Table, Button, message } from "antd";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { setHeader } from "./setHeader";
+import { Button, Table } from "../../components";
 import Sidebar from "./Sidebar";
-
+import { getBulkData } from "./service";
+import { errorMessage } from "../../utils/showMessage";
 const BulkList = () => {
   const [data, setData] = useState([]);
   const navigate = useNavigate();
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_SERVER_URL}/events/getBulk`,
-          {
-            headers: setHeader.json,
-          }
-        );
+        const response = await getBulkData();
         setData(response.data["data"]);
       } catch (error) {
         if (error.response.status === 403) {
           navigate("/");
-          message.error({
-            type: "error",
-            content: "You are Unauthorized, Please Login",
-            duration: 2,
-          });
+          errorMessage("You are Unauthorized, Please Login");
         } else console.error("Error fetching data: ", error);
       }
     };
@@ -62,9 +52,8 @@ const BulkList = () => {
           onClick={() => handleClick(record.uploadId)}
           style={{ margin: "10px" }}
           type="link"
-        >
-          View Log
-        </Button>
+          name="View Log"
+        ></Button>
       ),
     },
   ];
@@ -75,10 +64,8 @@ const BulkList = () => {
 
   return (
     <Sidebar>
-      <>
-        <h2>BulkList</h2>
-        <Table dataSource={data} columns={columns} />
-      </>
+      <h2>BulkList</h2>
+      <Table columns={columns} dataSource={data} />
     </Sidebar>
   );
 };

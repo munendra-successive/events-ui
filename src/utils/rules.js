@@ -166,4 +166,15 @@ const register = {
     },
   ],
 };
-export { edit, register };
+
+const login = {
+  email: [
+    { required: true, message: "Please input your password!" },
+    { min: 6, message: "Password must be at least 6 characters" },
+  ],
+  password: [
+    { required: true, message: "Please input your password!" },
+    { min: 6, message: "Password must be at least 6 characters" },
+  ],
+};
+export { edit, register, login };

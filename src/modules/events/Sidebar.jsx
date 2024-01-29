@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Layout, Menu } from "antd";
 import PropTypes from "prop-types";
@@ -6,6 +6,28 @@ import PropTypes from "prop-types";
 const Sidebar = ({ children }) => {
   const navigate = useNavigate();
   const { Sider, Content } = Layout;
+
+  const menuItems = [
+    {
+      key: "list",
+      label: "List",
+      path: "/list",
+    },
+    {
+      key: "bulkUpload",
+      label: "Bulk Listing",
+      path: "/bulkDetails",
+    },
+    {
+      key: "logout",
+      label: "Logout",
+      onClick: () => {
+        localStorage.removeItem("authorization");
+        navigate("/");
+      },
+    },
+  ];
+
   return (
     <div>
       <Layout style={{ minHeight: "100vh" }}>
@@ -16,26 +38,11 @@ const Sidebar = ({ children }) => {
             defaultSelectedKeys={["list"]}
             style={{ height: "100%", borderRight: 0 }}
           >
-            <Menu.Item key="list" onClick={() => navigate("/list")}>
-              <Link to="/list">List</Link>
-            </Menu.Item>
-            <Menu.Item
-              key="bulkUpload"
-              onClick={() => navigate("/bulkDetails")}
-            >
-              <Link to="/bulkDetails">Bulk Listing</Link>
-            </Menu.Item>
-            <Menu.Item key="logout">
-              <Link
-                to="/"
-                onClick={() => {
-                  localStorage.removeItem("authorization");
-                  navigate("/");
-                }}
-              >
-                Logout
-              </Link>
-            </Menu.Item>
+            {menuItems.map((item) => (
+              <Menu.Item key={item.key} onClick={item.onClick}>
+                <Link to={item.path}>{item.label}</Link>
+              </Menu.Item>
+            ))}
           </Menu>
         </Sider>
         <Layout>

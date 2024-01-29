@@ -1,11 +1,9 @@
-import React, { useContext, useState } from "react";
-import axios from "axios";
-import { setHeader } from "./setHeader";
-import { InboxOutlined } from "@ant-design/icons";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
-import { Button, Upload, Spin, Flex, message } from "antd";
-const { Dragger } = Upload;
+import { uploadCsv } from "./service";
+import { Button, Dragger, Flex } from "../../components";
+import { errorMessage, successMessage } from "../../utils/showMessage";
 
 const BulkUplaod = () => {
   const navigate = useNavigate();
@@ -31,31 +29,15 @@ const BulkUplaod = () => {
       const formData = new FormData();
       formData.append("csvFile", file);
       formData.append("fileName", fileName);
-
-      await axios.post(
-        `${process.env.REACT_APP_SERVER_URL}/events/upload`,
-        formData,
-        {
-          headers: setHeader.form,
-        }
-      );
+      await uploadCsv(formData);
       setLoading(false);
       setFile(null);
       setFileName(null);
-      message.success({
-        type: "success",
-        content: "File uploaded Successfully",
-        duration: 2,
-      });
+      successMessage("File uploaded Successfully");
     } catch (error) {
       if (error.response.status === 403) {
         navigate("/");
-
-        message.error({
-          type: "error",
-          content: "You are Unauthorized, Please Login",
-          duration: 2,
-        });
+        errorMessage("You are Unauthorized, Please Login");
       } else {
         console.log("error is:", error);
       }
@@ -70,25 +52,15 @@ const BulkUplaod = () => {
         <h2>CSV File Uploader</h2>
         {loading && (
           <div style={{ marginLeft: "40%", marginBottom: "100px" }}>
-            <Flex gap="large">
-              <Spin size="large">
-                <div className="content" />
-              </Spin>
-            </Flex>
+            <Flex />
           </div>
         )}
         <Dragger
           accept=".csv"
-          onChange={handleFileChange}
           data-testid="choose-file"
-        >
-          <p className="ant-upload-drag-icon">
-            <InboxOutlined />
-          </p>
-          <p className="ant-upload-text">
-            Click or drag file to this area to upload, it only accepts csv file
-          </p>
-        </Dragger>
+          onChange={handleFileChange}
+        />
+
         <div
           style={{
             marginLeft: "40%",
@@ -104,9 +76,8 @@ const BulkUplaod = () => {
           style={{ marginLeft: "40%" }}
           onClick={handleUpload}
           disabled={!file}
-        >
-          Upload Csv
-        </Button>
+          name="Upload Csv"
+        />
       </div>
     </Sidebar>
   );

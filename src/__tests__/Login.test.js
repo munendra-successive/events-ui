@@ -1,8 +1,7 @@
-import { Login } from "../components";
-import React, { useState } from "react";
+import { Login } from "../modules";
+import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
-import { UserAuth } from "../components";
 import axios from "axios";
 Object.defineProperty(window, "matchMedia", {
   writable: true,
@@ -21,14 +20,11 @@ Object.defineProperty(window, "matchMedia", {
 jest.mock("axios");
 const navigate = jest.fn();
 describe("Testing Login Page", () => {
-  const setLogin = jest.fn();
   test("Testing Login Page correctly rendering or not", () => {
     render(
-      <UserAuth.Provider value={{ setLogin }}>
-        <BrowserRouter>
-          <Login />
-        </BrowserRouter>
-      </UserAuth.Provider>
+      <BrowserRouter>
+        <Login />
+      </BrowserRouter>
     );
     expect(screen.getByText("Log In")).toBeInTheDocument();
     expect(screen.getByText("Sign Up")).toBeInTheDocument();
@@ -41,11 +37,9 @@ describe("Testing Login Page", () => {
       data: { message: "Login Successful" },
     });
     render(
-      <UserAuth.Provider value={{ setLogin }}>
-        <BrowserRouter>
-          <Login />
-        </BrowserRouter>
-      </UserAuth.Provider>
+      <BrowserRouter>
+        <Login />
+      </BrowserRouter>
     );
 
     const emailInput = screen.getByLabelText("Email");
@@ -69,11 +63,9 @@ describe("Testing Login Page", () => {
       },
     });
     render(
-      <UserAuth.Provider value={{ setLogin }}>
-        <BrowserRouter>
-          <Login />
-        </BrowserRouter>
-      </UserAuth.Provider>
+      <BrowserRouter>
+        <Login />
+      </BrowserRouter>
     );
 
     const emailInput = screen.getByLabelText("Email");
@@ -92,11 +84,9 @@ describe("Testing Login Page", () => {
       },
     });
     render(
-      <UserAuth.Provider value={{ setLogin }}>
-        <BrowserRouter>
-          <Login />
-        </BrowserRouter>
-      </UserAuth.Provider>
+      <BrowserRouter>
+        <Login />
+      </BrowserRouter>
     );
 
     const emailInput = screen.getByLabelText("Email");
@@ -113,11 +103,9 @@ describe("Testing Login Page", () => {
       data: { message: "Invalid Credentials" },
     });
     render(
-      <UserAuth.Provider value={{ setLogin }}>
-        <BrowserRouter>
-          <Login />
-        </BrowserRouter>
-      </UserAuth.Provider>
+      <BrowserRouter>
+        <Login />
+      </BrowserRouter>
     );
     const signUpButton = screen.getByText("Sign Up");
     fireEvent.click(signUpButton);

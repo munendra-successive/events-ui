@@ -1,12 +1,15 @@
-const setHeader = {
-  json: {
+const setJSON = () => {
+  return {
     "Content-Type": "application/json",
     Authorization: localStorage.getItem("authorization"),
-  },
-  form: {
-    "Content-Type": "multipart/form-data",
-    Authorization: localStorage.getItem("authorization"),
-  },
+  };
 };
 
-export { setHeader };
+const setFORM = () => {
+  return {
+    "Content-Type": "multipart/form-data",
+    Authorization: localStorage.getItem("authorization"),
+  };
+};
+
+export { setJSON, setFORM };

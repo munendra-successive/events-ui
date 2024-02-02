@@ -1,28 +1,27 @@
-import { Form, Input } from "antd";
-import { Button } from "../../components";
-import axios from "axios";
+import {
+  Button,
+  Form,
+  FormComp,
+  FormItem,
+  Input,
+  Password,
+} from "../../components";
 import { register } from "../../utils/rules";
-import config from "../../config";
+import { register as registerUser } from "./service";
 import { errorMessage, successMessage } from "../../utils/showMessage";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
-  const [form] = Form.useForm();
+  const [form] = FormComp.useForm();
+  const navigate = useNavigate();
   const handleSubmit = async (values) => {
     try {
       const { confirmPassword, ...otherValues } = values;
-      const response = await axios.post(
-        `${config.user_url}/register`,
-        otherValues,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
+      const response = await registerUser(otherValues);
       form.resetFields();
       if (response.data.message === "Registered Successfully") {
         successMessage(response.data.message);
+        navigate("/");
       }
     } catch (error) {
       if (error.response.data.message === "User already exist") {
@@ -32,8 +31,10 @@ const Register = () => {
   };
 
   return (
-    <div style={{ justifySelf: "center" }}>
-      <h2>User Registration</h2>
+    <div style={{ maxWidth: "600px", margin: "auto" }}>
+      <h2 style={{ textAlign: "center", marginBottom: "20px" }}>
+        User Registration
+      </h2>{" "}
       <Form
         form={form}
         labelCol={{ span: 8 }}
@@ -41,39 +42,49 @@ const Register = () => {
         onFinish={handleSubmit}
         autoComplete="off"
       >
-        <Form.Item label="Name" name="name" rules={register.name}>
+        <FormItem label="Name" name="name" rules={register.name}>
           <Input placeholder="Enter your fullname" />
-        </Form.Item>
+        </FormItem>
 
-        <Form.Item label="Email" name="email" rules={register.email}>
+        <FormItem label="Email" name="email" rules={register.email}>
           <Input placeholder="Enter email" />
-        </Form.Item>
+        </FormItem>
 
-        <Form.Item label="Password" name="password" rules={register.password}>
-          <Input.Password placeholder="Please enter password" />
-        </Form.Item>
+        <FormItem label="Password" name="password" rules={register.password}>
+          <Password placeholder="Please enter password" />
+        </FormItem>
 
-        <Form.Item
+        <FormItem
           label="Confirm Password"
           name="confirmPassword"
           dependencies={["password"]}
           hasFeedback
           rules={register.confirmPassword}
         >
-          <Input.Password placeholder="Enter password  again" />
-        </Form.Item>
+          <Password placeholder="Enter password  again" />
+        </FormItem>
 
-        <Form.Item label="Address" name="address" rules={register.address}>
+        <FormItem label="Address" name="address" rules={register.address}>
           <Input placeholder="Enter city, state" />
-        </Form.Item>
+        </FormItem>
 
-        <Form.Item label="Phone" name="phone" rules={register.phone}>
+        <FormItem label="Phone" name="phone" rules={register.phone}>
           <Input placeholder="Enter your phone" />
-        </Form.Item>
+        </FormItem>
 
-        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-          <Button type="primary" htmlType="submit" name="Register" />
-        </Form.Item>
+        <FormItem wrapperCol={{ offset: 8, span: 16 }}>
+          <div
+            style={{
+              display: "-ms-inline-flexbox",
+              justifyContent: "space-between",
+            }}
+          >
+            <Button type="primary" htmlType="submit" name="Register" />
+
+            <h4>Already have an account</h4>
+            <Button type="primary" onClick={() => navigate("/")} name="Login" />
+          </div>
+        </FormItem>
       </Form>
     </div>
   );

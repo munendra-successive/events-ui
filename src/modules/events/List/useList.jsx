@@ -48,14 +48,14 @@ const useList = () => {
             data-testid="view-btn"
             size="large"
             onClick={() => navigate(`/view/${record._id}`)}
-            iconName="view"
+            iconname="view"
           />
           <Button
             type="link"
             test_id="edit-btn"
             size="large"
             onClick={() => navigate(`/edit/${record._id}`)}
-            iconName="edit"
+            iconname="edit"
           />
 
           <Button
@@ -64,7 +64,7 @@ const useList = () => {
             test_id="delete-btn"
             onClick={() => handleActionDelete(record)}
             danger="true"
-            iconName="delete"
+            iconname="delete"
           />
         </>
       ),

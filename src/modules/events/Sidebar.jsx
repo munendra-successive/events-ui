@@ -12,11 +12,13 @@ const Sidebar = ({ children }) => {
       key: "list",
       label: "List",
       path: "/list",
+      onClick: () => navigate("/list"),
     },
     {
       key: "bulkUpload",
       label: "Bulk Listing",
       path: "/bulkDetails",
+      onClick: () => navigate("/bulkDetails"),
     },
     {
       key: "logout",
@@ -33,17 +35,12 @@ const Sidebar = ({ children }) => {
       <Layout style={{ minHeight: "100vh" }}>
         <Sider width={200} className="site-layout-background">
           <Menu
+            items={menuItems}
             theme="dark"
             mode="inline"
             defaultSelectedKeys={["list"]}
             style={{ height: "100%", borderRight: 0 }}
-          >
-            {menuItems.map((item) => (
-              <Menu.Item key={item.key} onClick={item.onClick}>
-                <Link to={item.path}>{item.label}</Link>
-              </Menu.Item>
-            ))}
-          </Menu>
+          />
         </Sider>
         <Layout>
           <Content style={{ padding: "0 24px" }}>{children}</Content>

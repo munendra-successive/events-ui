@@ -1,5 +1,5 @@
 import axios from "axios";
-import { setHeader } from "./setHeader";
+import { setJSON, setFORM } from "./setHeader";
 import moment from "moment";
 import config from "../../config";
 const getData = async (current, pageSize, query = null) => {
@@ -9,31 +9,31 @@ const getData = async (current, pageSize, query = null) => {
       pageSize,
       query,
     },
-    headers: setHeader.json,
+    headers: setJSON(),
   });
 };
 
 const getBulkData = async () => {
   return await axios.get(`${config.event_url}/getBulk`, {
-    headers: setHeader.json,
+    headers: setJSON(),
   });
 };
 
 const uploadCsv = async (formData) => {
   return await axios.post(`${config.event_url}/upload`, formData, {
-    headers: setHeader.form,
+    headers: setFORM(),
   });
 };
 
 const deleteData = async (id) => {
   return await axios.delete(`${config.event_url}/deleteById/${id}`, {
-    headers: setHeader.json,
+    headers: setJSON(),
   });
 };
 
 const fetchEditData = async (id) => {
   return await axios.get(`${config.event_url}/getById/${id}`, {
-    headers: setHeader.json,
+    headers: setJSON(),
   });
 };
 const setFormFields = (eventData) => {
@@ -58,13 +58,13 @@ const setFormFields = (eventData) => {
 
 const EditData = async (values, id) => {
   await axios.put(`${config.event_url}/updateById/${id}`, values, {
-    headers: setHeader.json,
+    headers: setJSON(),
   });
 };
 
 const createData = async (values) => {
   return await axios.post(`${config.event_url}/create`, values, {
-    headers: setHeader.json,
+    headers: setJSON(),
   });
 };
 
@@ -77,7 +77,7 @@ const fetchLogData = async (uploadId, current, pageSize) => {
         current: current,
         pageSize: pageSize,
       },
-      headers: setHeader.json,
+      headers: setJSON(),
     }
   );
 };

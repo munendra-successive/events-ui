@@ -1,16 +1,23 @@
 import React, { useEffect } from "react";
-import { Form, Input, DatePicker } from "antd";
-import { Button } from "../../components";
+import {
+  Button,
+  FormItem,
+  TextArea,
+  DatePicker,
+  InputGroup,
+  Input,
+  Form,
+  FormComp,
+} from "../../components";
 import { useNavigate, useParams } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import { edit } from "../../utils/rules";
 import { fetchEditData, setFormFields, EditData, createData } from "./service";
-import { errorMessage } from "../../utils/showMessage";
-const { TextArea } = Input;
+import { errorMessage, successMessage } from "../../utils/showMessage";
 
 const Edit = () => {
   const navigate = useNavigate();
-  const [form] = Form.useForm();
+  const [form] = FormComp.useForm();
   const { id } = useParams();
   const fetchData = async () => {
     try {
@@ -33,10 +40,11 @@ const Edit = () => {
   const Edit = async (values) => {
     try {
       await EditData(values, id);
-      alert("record updated successfully");
+      successMessage("Record updated successfully");
       form.resetFields();
+      navigate("/list");
     } catch (error) {
-      alert("Error Occured");
+      errorMessage("Error Occured");
       if (error.response.status === 403) navigate("/");
       else console.error("Error in  Saving data: ", error);
     }
@@ -46,9 +54,9 @@ const Edit = () => {
     try {
       await createData(values);
       form.resetFields();
-      alert("record added successfully");
+      successMessage("Record added successfully");
     } catch (error) {
-      alert("Error Occured");
+      errorMessage("Error Occured");
       if (error.response.status === 403) navigate("/");
       else console.error("Error in Saving data", error);
     }
@@ -69,77 +77,77 @@ const Edit = () => {
         labelCol={{ span: 4 }}
         wrapperCol={{ span: 14 }}
       >
-        <Form.Item label="Event Name" name="name" rules={edit.eventName}>
+        <FormItem label="Event Name" name="name" rules={edit.eventName}>
           <Input placeholder="Event Name" />
-        </Form.Item>
+        </FormItem>
 
-        <Form.Item label="Address">
-          <Input.Group>
-            <Form.Item name={["address", "street"]} rules={edit.street} noStyle>
+        <FormItem label="Address">
+          <InputGroup>
+            <FormItem name={["address", "street"]} rules={edit.street} noStyle>
               <Input placeholder="Street" />
-            </Form.Item>
-            <Form.Item name={["address", "city"]} rules={edit.city} noStyle>
+            </FormItem>
+            <FormItem name={["address", "city"]} rules={edit.city} noStyle>
               <Input placeholder="City" />
-            </Form.Item>
-            <Form.Item name={["address", "state"]} rules={edit.state} noStyle>
+            </FormItem>
+            <FormItem name={["address", "state"]} rules={edit.state} noStyle>
               <Input placeholder="State" />
-            </Form.Item>
-            <Form.Item
+            </FormItem>
+            <FormItem
               name={["address", "postalCode"]}
               rules={edit.postalCode}
               noStyle
             >
               <Input placeholder="Postal Code" />
-            </Form.Item>
-            <Form.Item
+            </FormItem>
+            <FormItem
               name={["address", "country"]}
               rules={edit.country}
               noStyle
             >
               <Input placeholder="Country" />
-            </Form.Item>
-          </Input.Group>
-        </Form.Item>
+            </FormItem>
+          </InputGroup>
+        </FormItem>
 
-        <Form.Item
+        <FormItem
           label="Description"
           name="description"
           rules={edit.description}
         >
           <TextArea />
-        </Form.Item>
+        </FormItem>
 
-        <Form.Item label="Start Date" name="startDate">
+        <FormItem label="Start Date" name="startDate">
           <DatePicker />
-        </Form.Item>
+        </FormItem>
 
-        <Form.Item label="End Date" name="endDate">
+        <FormItem label="End Date" name="endDate">
           <DatePicker />
-        </Form.Item>
+        </FormItem>
 
-        <Form.Item label="Category" name="category" rules={edit.category}>
+        <FormItem label="Category" name="category" rules={edit.category}>
           <Input />
-        </Form.Item>
+        </FormItem>
 
-        <Form.Item
+        <FormItem
           label="Organizer Info"
           name="organizerInfo"
           rules={edit.organizerInfo}
         >
           <Input />
-        </Form.Item>
+        </FormItem>
 
-        <Form.Item label="Type" name="type" rules={edit.type}>
+        <FormItem label="Type" name="type" rules={edit.type}>
           <Input />
-        </Form.Item>
+        </FormItem>
 
-        <Form.Item label="Status" name="status" rules={edit.status}>
+        <FormItem label="Status" name="status" rules={edit.status}>
           <Input />
-        </Form.Item>
+        </FormItem>
 
-        <Form.Item wrapperCol={{ offset: 4, span: 14 }}>
+        <FormItem wrapperCol={{ offset: 4, span: 14 }}>
           <Button type="primary" htmlType="submit" name="Save" />
-        </Form.Item>
+        </FormItem>
       </Form>
     </Sidebar>
   );

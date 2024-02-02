@@ -9,8 +9,8 @@ const iconMapping = {
 };
 
 const Button = (props) => {
-  const { name, iconName, danger } = props;
-  const iconComponent = iconName ? iconMapping[iconName] : null;
+  const { name, iconname, danger } = props;
+  const iconComponent = iconname ? iconMapping[iconname] : null;
   return (
     <ButtonComponent
       icon={iconComponent}

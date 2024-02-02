@@ -1,13 +1,11 @@
-import React, { useEffect } from "react";
-import { Form, Input } from "antd";
-import { Button } from "../../components";
+import React from "react";
+import { Button, Form, Input, FormItem, Password } from "../../components";
 import { useNavigate } from "react-router-dom";
 import { login as logrules } from "../../utils/rules";
 import { login } from "./service";
 import { errorMessage, successMessage } from "../../utils/showMessage";
 const Login = () => {
   const navigate = useNavigate();
-
   const handleLogin = async (values) => {
     try {
       const response = await login(values);
@@ -30,30 +28,30 @@ const Login = () => {
       onFinish={handleLogin}
       style={{ width: 300, margin: "auto", marginTop: 100 }}
     >
-      <Form.Item label="Email" name="email" rules={logrules.email}>
+      <FormItem label="Email" name="email" rules={logrules.email}>
         <Input placeholder="Enter your email" />
-      </Form.Item>
+      </FormItem>
 
-      <Form.Item label="Password" name="password" rules={logrules.password}>
-        <Input.Password placeholder="Enter your password" />
-      </Form.Item>
+      <FormItem label="Password" name="password" rules={logrules.password}>
+        <Password placeholder="Enter your password" />
+      </FormItem>
 
-      <Form.Item>
+      <FormItem>
         <Button
           type="primary"
           htmlType="submit"
           style={{ width: "100%" }}
           name="Log In"
         />
-      </Form.Item>
-      <Form.Item>
+      </FormItem>
+      <FormItem>
         <Button
           type="primary"
           onClick={() => navigate("/register")}
           style={{ width: "100%" }}
           name="SignUp"
         />
-      </Form.Item>
+      </FormItem>
     </Form>
   );
 };

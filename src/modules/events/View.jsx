@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import Sidebar from "./Sidebar";
-import { Table } from "../../components";
+import { Table, Sidebar } from "../../components";
 import { fetchEditData } from "./service";
 import { errorMessage } from "../../utils/showMessage";
 const columns = [

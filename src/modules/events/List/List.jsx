@@ -1,8 +1,14 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Table, Modal, Select, SearchBar, Button } from "../../../components";
+import {
+  Table,
+  Modal,
+  Select,
+  SearchBar,
+  Button,
+  Sidebar,
+} from "../../../components";
 import useList from "./useList";
-import Sidebar from "../Sidebar";
 
 const List = () => {
   const navigate = useNavigate();

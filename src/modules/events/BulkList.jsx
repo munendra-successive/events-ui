@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Table } from "../../components";
-import Sidebar from "./Sidebar";
+import { Button, Table, Sidebar } from "../../components";
 import { getBulkData } from "./service";
 import { errorMessage } from "../../utils/showMessage";
 const BulkList = () => {

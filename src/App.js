@@ -1,6 +1,7 @@
 import "./App.css";
+import { Skeleton } from "./components";
 import { Suspense } from "react";
-import { Skeleton } from "antd";
+
 import Router from "./utils/Router";
 function App() {
   return (

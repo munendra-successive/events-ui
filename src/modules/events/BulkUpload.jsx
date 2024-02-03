@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Sidebar from "./Sidebar";
 import { uploadCsv } from "./service";
-import { Button, Dragger, Flex } from "../../components";
+import { Button, Dragger, Flex, Sidebar } from "../../components";
 import { errorMessage, successMessage } from "../../utils/showMessage";
 
 const BulkUplaod = () => {

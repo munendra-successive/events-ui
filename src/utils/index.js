@@ -1,17 +1,16 @@
 import { lazy } from "react";
-// import Login from "../modules/user/Login";
-// import PublicRoutes from "../modules/user/PublicAuth";
-const Protected = lazy(() => import("../utils/Protected"));
-const Login = lazy(() => import("../modules/user/Login"));
-const Register = lazy(() => import("../modules/user/Register"));
-const Logs = lazy(() => import("../modules/events/Logs"));
-const List = lazy(() => import("../modules/events/List/List"));
-const BulkUplaod = lazy(() => import("../modules/events/BulkUpload"));
-const View = lazy(() => import("../modules/events/View"));
-const Edit = lazy(() => import("../modules/events/Create-Edit"));
-const NotFound = lazy(() => import("../utils/NotFound"));
-const BulkList = lazy(() => import("../modules/events/BulkList"));
-const PublicRoutes = lazy(() => import("../modules/user/PublicAuth"));
+import Login from "../modules/user/Login";
+import PublicRoutes from "../modules/user/PublicAuth";
+import Protected from "../utils/Protected";
+import Register from "../modules/user/Register";
+import List from "../modules/events/List/List";
+import BulkUplaod from "../modules/events/BulkUpload";
+import View from "../modules/events/View";
+import Edit from "../modules/events/Create-Edit";
+import BulkList from "../modules/events/BulkList";
+import NotFound from "../utils/NotFound";
+import Logs from "../modules/events/Logs";
+
 
 export {
   PublicRoutes,

@@ -8,9 +8,9 @@ import {
   Input,
   Form,
   FormComp,
+  Sidebar,
 } from "../../components";
 import { useNavigate, useParams } from "react-router-dom";
-import Sidebar from "./Sidebar";
 import { edit } from "../../utils/rules";
 import { fetchEditData, setFormFields, EditData, createData } from "./service";
 import { errorMessage, successMessage } from "../../utils/showMessage";

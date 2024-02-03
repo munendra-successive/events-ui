@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Table } from "../../components";
+import { Table, Sidebar } from "../../components";
 import { useNavigate, useParams } from "react-router-dom";
-import Sidebar from "./Sidebar";
 import { fetchLogData } from "./service";
 import { errorMessage } from "../../utils/showMessage";
 const Logs = () => {
